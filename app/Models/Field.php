@@ -11,4 +11,12 @@ class Field extends Model
      * @var string
      */
     protected $table = 'field';
+    public function promotions()
+    {
+        return $this->hasMany('App\Models\Promotion');
+    }
+    public function schedules()
+    {
+        return $this->hasMany('App\Models\Schedule');
+    }
 }

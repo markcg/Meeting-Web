@@ -17,6 +17,14 @@ Route::get('/', function () {
 
 Route::middleware(['web'])->group(function () {
   Route::prefix('field')->group(function () {
-    Route::get('add', 'HomeController@add_promotion_list');
+    /* Get */
+    Route::get('/', 'HomeController@home');
+    Route::get('schedule', 'HomeController@schedule');
+    Route::get('report', 'HomeController@report');
+    Route::get('promotions', 'HomeController@promotions');
+    Route::get('promotions/add', 'HomeController@add_promotion_list');
+    Route::get('promotions/edit/{id}', 'HomeController@update_promotion_list');
+    /* Post */
+    Route::post('promotions/add', 'HomeController@add_promotion');
   });
 });

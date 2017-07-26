@@ -11,4 +11,9 @@ class Promotion extends Model
      * @var string
      */
     protected $table = 'promotion';
+
+    public function field()
+    {
+        return $this->belongsToMany('App\Models\Field');
+    }
 }

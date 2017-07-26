@@ -11,4 +11,8 @@ class Schedule extends Model
      * @var string
      */
     protected $table = 'schedule';
+    public function field()
+    {
+        return $this->belongsToMany('App\Models\Field');
+    }
 }
