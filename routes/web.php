@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware(['web'])->group(function () {
+  Route::prefix('field')->group(function () {
+    Route::get('add', 'HomeController@add_promotion_list');
+  });
+});
