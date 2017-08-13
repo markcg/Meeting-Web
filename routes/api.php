@@ -16,3 +16,13 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
   return $request->user();
 });
+
+Route::middleware(['api'])->group(function () {
+  Route::prefix('field')->group(function () {
+    /* Get */
+    Route::get('schedule/add', 'HomeController@add_schedule');
+    Route::get('schedule/delete/{id}', 'HomeController@delete_schedule');
+    Route::get('schedule/confirm/{id}', 'HomeController@confirm_schedule');
+    Route::get('schedule/reserve/{id}', 'HomeController@reserve_schedule');
+  });
+});

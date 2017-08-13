@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/field');
 });
 
 Route::middleware(['web'])->group(function () {
@@ -26,5 +26,6 @@ Route::middleware(['web'])->group(function () {
     Route::get('promotions/edit/{id}', 'HomeController@update_promotion_list');
     /* Post */
     Route::post('promotions/add', 'HomeController@add_promotion');
+    Route::post('schedule', 'HomeController@handle_schedule');
   });
 });

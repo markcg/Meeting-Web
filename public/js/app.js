@@ -16338,15 +16338,23 @@ module.exports = __webpack_require__(152);
 */
 
 __webpack_require__(126);
+var _ = __webpack_require__(127);
 var moment = __webpack_require__(0);
 window.meetingApp = function () {
-  var app = {};
+  var app = {
+    schedules: [],
+    current: null
+  };
   app.schedule = function (current) {
-    if (current === null) {
+    console.log(current);
+    if (current) {
+      current = moment(current);
+    } else {
       current = moment();
     }
+    app.current = current;
     app.setHeader(current);
-    app.generateSchedule();
+    app.generateSchedule(current);
   };
 
   app.setHeader = function (current) {
@@ -16361,14 +16369,59 @@ window.meetingApp = function () {
     $("#sixth-header").text(moment(current).add(5, "days").format("DD/MM/YYYY"));
     $("#seventh-header").text(moment(current).add(6, "days").format("DD/MM/YYYY"));
   };
+  app.createForm = function (date, time, type, obj) {
+    var form = $('<form method="post" action=""></form>');
+    var dateInput = $('<input type="hidden" name="date" />');
+    dateInput.val(date);
+    var timeInput = $('<input type="hidden" name="time" />');
+    timeInput.val(time);
+    var typeInput = $('<input type="hidden" name="type" value="reserved" />');
+    var button = $('<button type="submit"></button>');
+    if (type === "reserved") {
+      button.text("Reserved");
+      button.addClass("btn btn-warning");
+      button.click(function () {
+        return confirm("Remove this reserved?");
+      });
+    } else {
+      button.text("Available");
+      button.addClass("btn btn-success");
+      button.click(function () {
+        return confirm("Confrim reservation?");
+      });
+    }
 
-  app.generateSchedule = function () {
+    form.append(dateInput);
+    form.append(timeInput);
+    form.append(typeInput);
+    form.append(button);
+    if (obj) {
+      var id = $('<input type="hidden" name="id" />');
+      id.val(obj.id);
+      form.append(id);
+    }
+    return form;
+  };
+  app.generateSchedule = function (current) {
     var schedule = $("#schedule-list");
     schedule.empty();
     for (var i = 0; i < 17; i++) {
       var row = $("<tr></tr>");
       for (var k = 0; k <= 7; k++) {
         var data = $("<td></td>");
+        var haveSchedule = _.find(app.schedules[k - 1], { time: i + 8 });
+        // console.log(app.schedules[k]);
+        var button = null;
+        var date = moment(current).add(k - 1, "days").format("YYYY-MM-DD");
+        // console.log(haveSchedule);
+        if (haveSchedule !== undefined) {
+          button = app.createForm(date, i + 8, 'reserved', haveSchedule);
+        } else {
+          button = app.createForm(date, i + 8);
+        }
+
+        // button.onClick();
+        data.append(button);
         if (k === 0) {
           data.text(i + 8);
         }

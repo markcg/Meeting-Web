@@ -13,6 +13,12 @@
             </a>
           </div>
           <div class="col-sm-12 text-center">
+            <form method="get" action="">
+              <input type="date" name="search" />
+              <input type="submit" value="Go" />
+            </form>
+          </div>
+          <div class="col-sm-12 text-center">
             <table class="table table-bordered">
               <thead>
                 <tr>
@@ -43,7 +49,10 @@
 $(document).ready(function(){
   // let current = moment();
   var app = window.meetingApp;
-  meetingApp.schedule();
+  var data = JSON.parse('<?php echo isset($schedules) ? json_encode($schedules) : '' ?>');
+  console.log(data);
+  meetingApp.schedules = data;
+  meetingApp.schedule('<?php print(isset($_GET['search']) ? $_GET['search'] : '') ?>');
 });
 </script>
 @endsection
