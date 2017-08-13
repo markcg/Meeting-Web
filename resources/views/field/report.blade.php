@@ -28,13 +28,6 @@
                   <td>{{$schedule->id}}</td>
                   <td>{{$schedule->date}}</td>
                   <td>{{$schedule->schedule}}</td>
-                  <!-- <td>
-                    <a href="{{action('HomeController@update_promotion_list', ['id' => $promotion->id])}}">
-                      <button class="btn btn-info btn-block">
-                        Delete
-                      </button>
-                    </a>
-                  </td> -->
                 </tr>
                 @endforeach
               </tbody>
