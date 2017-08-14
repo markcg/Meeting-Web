@@ -8,25 +8,25 @@
         <div class="panel-heading">Field Management</div>
         <div class="panel-body">
           <div class="col-sm-12 text-center">
-            <a href="{{action('HomeController@promotions')}}">
+            <a href="{{action('FieldController@promotions')}}">
               Back
             </a>
           </div>
-          <form method="post" action="{{action('HomeController@add_promotion')}}">
+          <form method="post" action="{{isset($id) ? action('FieldController@edit_promotion', ['id' => $promotion->id]) : action('FieldController@add_promotion')}}">
             <div class="col-sm-12">
               <table class="table table-bordered">
                 <tbody id="schedule-list">
                   <tr>
                     <td>Name</td>
-                    <td><input type="text" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Price</td>
-                    <td><input type="text" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Description</td>
-                    <td><input type="text" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
                   </tr>
                 </tbody>
               </table>

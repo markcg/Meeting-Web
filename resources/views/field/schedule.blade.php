@@ -8,7 +8,7 @@
         <div class="panel-heading">Schedule</div>
         <div class="panel-body">
           <div class="col-sm-12 text-center">
-            <a href="{{action('HomeController@home')}}">
+            <a href="{{action('FieldController@home')}}">
               Back
             </a>
           </div>

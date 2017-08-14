@@ -5,6 +5,9 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\Request;
+
+use App\Http\Controllers\FieldController;
 use App\Models\Schedule;
 use App\Models\Promotion;
 
@@ -77,6 +80,9 @@ class FieldTest extends TestCase
     );
     $response->assertStatus(302);
     $response->assertRedirect('field/promotions');
+    $this->assertDatabaseHas('promotion', [
+        'title' => 'testFieldPromotionAddPost'
+    ]);
 
     Promotion::where('title', '=', 'testFieldPromotionAddPost')->delete();
     // echo $response->getTargetUrl();
@@ -102,6 +108,7 @@ class FieldTest extends TestCase
     $response->assertStatus(302);
     $response->assertRedirect('field/promotions');
 
+    Promotion::where('title', '=', 'testFieldPromotionEditPost')->delete();
     Promotion::where('title', '=', 'testFieldPromotionEditPostChange')->delete();
     // echo $response->getTargetUrl();
   }
@@ -137,8 +144,143 @@ class FieldTest extends TestCase
     $response->assertStatus(302);
     $response->assertRedirect('field/schedule');
     $this->assertDatabaseMissing('schedule', [
-        'field_id' => 9999
-    ]);
-    // echo $response->getTargetUrl();
+      'field_id' => 9999
+      ]);
+      // echo $response->getTargetUrl();
+    }
+
+    /* API Method*/
+    /* --Promotion Add*/
+    public function testFieldAPIAddPromotionValid()
+    {
+      $controller = new FieldController();
+      $request = Request::create(
+      '/promotions/add',
+      'post',
+      [
+        'title' => 'testFieldAPIAddPromotionValid',
+        'price' => '0',
+        'description' => 'testFieldAPIAddPromotionValid'
+        ]
+      );
+      $result = $controller->promotion_add($request);
+      $this->assertTrue($result);
+      $this->assertDatabaseHas('promotion', [
+          'title' => 'testFieldAPIAddPromotionValid'
+      ]);
+      Promotion::where('title', '=', 'testFieldAPIAddPromotionValid')->delete();
+    }
+
+    public function testFieldAPIAddPromotionInvalid()
+    {
+      $controller = new FieldController();
+      $request = Request::create(
+      '/promotions/add',
+      'post',
+      [
+        'title' => 'API Add'
+        ]
+      );
+      $result = $controller->promotion_add($request);
+      $this->assertFalse($result);
+    }
+    /* -- Promotion Edit */
+    public function testFieldAPIEditPromotionValid()
+    {
+      $promotion = new Promotion();
+      $promotion->field_id = 10003;
+      $promotion->title = 'testFieldAPIEditPromotionValid';
+      $promotion->price = 0;
+      $promotion->description = 'testFieldAPIEditPromotionValid';
+      $promotion->save();
+
+      $controller = new FieldController();
+      $request = Request::create(
+      '/promotions/edit',
+      'post',
+      [
+        'title' => 'testFieldAPIEditPromotionValidChange',
+        'price' => '0',
+        'description' => 'testFieldAPIEditPromotionValid'
+        ]
+      );
+      $result = $controller->promotion_edit($promotion->id, $request);
+      $this->assertTrue($result);
+      $this->assertDatabaseHas('promotion', [
+          'title' => 'testFieldAPIEditPromotionValidChange'
+      ]);
+      Promotion::where('title', '=', 'testFieldAPIEditPromotionValid')->delete();
+    }
+
+    public function testFieldAPIEditPromotionInvalid()
+    {
+      $controller = new FieldController();
+      $request = Request::create(
+      '/promotions/edit',
+      'post',
+      [
+        'title' => 'testFieldAPIEditPromotionValid',
+        ]
+      );
+      $result = $controller->promotion_edit(null, $request);
+      $this->assertFalse($result);
+    }
+
+    /* -- Schedule Reserve */
+    public function testFieldAPIReserveScheduleValid()
+    {
+      $controller = new FieldController();
+      $request = Request::create(
+      '/promotions/schedule',
+      'post',
+      [
+        'date' => '2000-01-03',
+        'time' => 0,
+        ]
+      );
+      $result = $controller->schedule_reserve($request);
+      $this->assertTrue($result);
+      $this->assertDatabaseHas('schedule', [
+          'date' => '2000-01-03'
+      ]);
+      Schedule::where('date', '=', '2000-01-03')->delete();
+    }
+
+    public function testFieldAPIReserveScheduleInvalid()
+    {
+      $controller = new FieldController();
+      $request = Request::create(
+      '/promotions/schedule',
+      'post',
+      []
+      );
+      $result = $controller->schedule_reserve($request);
+      $this->assertFalse($result);
+    }
+
+    /* -- Schedule Delete */
+    public function testFieldAPIRemoveScheduleValid()
+    {
+      $schedule = new Schedule();
+      $schedule->field_id = 9999;
+      $schedule->date = '2000-01-05';
+      $schedule->time = 1;
+      $schedule->schedule = 'Reserve by field at ' . date('Y-m-d H:i:s');
+      $schedule->save();
+
+      $controller = new FieldController();
+      $result = $controller->schedule_delete($schedule->id);
+      $this->assertTrue($result);
+      $this->assertDatabaseMissing('schedule', [
+          'date' => '2000-01-05'
+      ]);
+      // Schedule::where('date', '=', '2000-01-03')->delete();
+    }
+
+    public function testFieldAPIRemoveScheduleInvalid()
+    {
+      $controller = new FieldController();
+      $result = $controller->schedule_delete(null);
+      $this->assertFalse($result);
+    }
   }
-}

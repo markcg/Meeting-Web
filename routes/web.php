@@ -18,14 +18,15 @@ Route::get('/', function () {
 Route::middleware(['web'])->group(function () {
   Route::prefix('field')->group(function () {
     /* Get */
-    Route::get('/', 'HomeController@home');
-    Route::get('schedule', 'HomeController@schedule');
-    Route::get('report', 'HomeController@report');
-    Route::get('promotions', 'HomeController@promotions');
-    Route::get('promotions/add', 'HomeController@add_promotion_list');
-    Route::get('promotions/edit/{id}', 'HomeController@update_promotion_list');
+    Route::get('/', 'FieldController@home');
+    Route::get('schedule', 'FieldController@schedule');
+    Route::get('report', 'FieldController@report');
+    Route::get('promotions', 'FieldController@promotions');
+    Route::get('promotions/add', 'FieldController@add_promotion_list');
+    Route::get('promotions/edit/{id}', 'FieldController@edit_promotion_list');
     /* Post */
-    Route::post('promotions/add', 'HomeController@add_promotion');
-    Route::post('schedule', 'HomeController@handle_schedule');
+    Route::post('promotions/add', 'FieldController@add_promotion');
+    Route::post('promotions/edit/{id}', 'FieldController@edit_promotion');
+    Route::post('schedule', 'FieldController@handle_schedule');
   });
 });
