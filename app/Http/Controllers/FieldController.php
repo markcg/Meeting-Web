@@ -28,7 +28,11 @@ class FieldController extends Controller
   public function edit_promotion_list($id)
   {
     $promotion = Promotion::find($id);
-    return view('field.promotion_add', [ 'promotion' =>  $promotion, 'id' => $id]);
+    if(is_null($promotion)){
+      return redirect('/field/promotions');
+    } else {
+      return view('field.promotion_add', [ 'promotion' =>  $promotion, 'id' => $id]);
+    }
   }
   public function schedule(Request $request)
   {
