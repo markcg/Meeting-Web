@@ -13,6 +13,6 @@ class Schedule extends Model
     protected $table = 'schedule';
     public function field()
     {
-        return $this->belongsToMany('App\Models\Field');
+        return $this->belongsTo('App\Models\Field');
     }
 }

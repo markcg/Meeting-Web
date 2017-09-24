@@ -9,6 +9,7 @@ const _ = require("lodash");
 const moment = require("moment");
 window.meetingApp = (function() {
   const app = {
+    field_id: 0,
     schedules: [],
     current: null
   };
@@ -30,26 +31,40 @@ window.meetingApp = (function() {
     }
     $("#first-header").text(moment(current).format("DD/MM/YYYY"));
     $("#second-header").text(
-      moment(current).add(1, "day").format("DD/MM/YYYY")
+      moment(current)
+        .add(1, "day")
+        .format("DD/MM/YYYY")
     );
     $("#third-header").text(
-      moment(current).add(2, "days").format("DD/MM/YYYY")
+      moment(current)
+        .add(2, "days")
+        .format("DD/MM/YYYY")
     );
     $("#fourth-header").text(
-      moment(current).add(3, "days").format("DD/MM/YYYY")
+      moment(current)
+        .add(3, "days")
+        .format("DD/MM/YYYY")
     );
     $("#fifth-header").text(
-      moment(current).add(4, "days").format("DD/MM/YYYY")
+      moment(current)
+        .add(4, "days")
+        .format("DD/MM/YYYY")
     );
     $("#sixth-header").text(
-      moment(current).add(5, "days").format("DD/MM/YYYY")
+      moment(current)
+        .add(5, "days")
+        .format("DD/MM/YYYY")
     );
     $("#seventh-header").text(
-      moment(current).add(6, "days").format("DD/MM/YYYY")
+      moment(current)
+        .add(6, "days")
+        .format("DD/MM/YYYY")
     );
   };
   app.createForm = (date, time, type, obj) => {
     const form = $('<form method="post" action=""></form>');
+    const fieldId = $('<input type="hidden" name="field_id" />');
+    fieldId.val(app.field_id);
     const dateInput = $('<input type="hidden" name="date" />');
     dateInput.val(date);
     const timeInput = $('<input type="hidden" name="time" />');
@@ -69,12 +84,12 @@ window.meetingApp = (function() {
         return confirm("Confrim reservation?");
       });
     }
-
+    form.append(fieldId);
     form.append(dateInput);
     form.append(timeInput);
     form.append(typeInput);
     form.append(button);
-    if(obj){
+    if (obj) {
       const id = $('<input type="hidden" name="id" />');
       id.val(obj.id);
       form.append(id);
@@ -88,13 +103,15 @@ window.meetingApp = (function() {
       const row = $("<tr></tr>");
       for (let k = 0; k <= 7; k++) {
         const data = $("<td></td>");
-        const haveSchedule = _.find(app.schedules[k - 1], { time: i + 8 });
+        const haveSchedule = _.find(app.schedules[k], { time: i + 8 });
         // console.log(app.schedules[k]);
         let button = null;
-        const date = moment(current).add(k - 1 , "days").format("YYYY-MM-DD")
+        const date = moment(current)
+          .add(k - 1, "days")
+          .format("YYYY-MM-DD");
         // console.log(haveSchedule);
         if (haveSchedule !== undefined) {
-          button = app.createForm(date, i + 8, 'reserved', haveSchedule);
+          button = app.createForm(date, i + 8, "reserved", haveSchedule);
         } else {
           button = app.createForm(date, i + 8);
         }

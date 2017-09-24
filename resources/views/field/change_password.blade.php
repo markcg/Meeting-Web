@@ -8,25 +8,25 @@
         <div class="panel-heading">Field Management</div>
         <div class="panel-body">
           <div class="col-sm-12 text-center">
-            <a href="{{action('FieldController@promotions')}}">
+            <a href="{{action('FieldController@home')}}">
               Back
             </a>
           </div>
-          <form method="post" action="{{isset($id) ? action('FieldController@edit_promotion', ['id' => $promotion->id]) : action('FieldController@add_promotion')}}">
+          <form method="post" action="{{action('FieldController@handle_change_password')}}">
             <div class="col-sm-12">
               <table class="table table-bordered">
                 <tbody id="schedule-list">
                   <tr>
-                    <td>Name</td>
-                    <td><input required type="text" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
+                    <td>Old Password</td>
+                    <td><input required type="text" class="form-control" name="old_password" /></td>
                   </tr>
                   <tr>
-                    <td>Price</td>
-                    <td><input required type="text" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
+                    <td>New Password</td>
+                    <td><input required type="text" class="form-control" name="new_password" /></td>
                   </tr>
                   <tr>
-                    <td>Description</td>
-                    <td><input required type="text" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
+                    <td>Confirm New Password</td>
+                    <td><input required type="text" class="form-control" name="re_password" /></td>
                   </tr>
                 </tbody>
               </table>
@@ -34,8 +34,7 @@
             <div class="col-sm-12">
               <div class="col-sm-6">
                 {{csrf_field()}}
-                <input type="hidden" name="id" value="{{isset($promotion) ? $promotion->id : ''}}" />
-                <input type="hidden" name="field_id" value="{{session('field')->id}}" />
+                <input type="hidden" name="id" value="{{session('field')->id}}" />
                 <button type="submit" class="btn btn-success btn-block">
                   Confirm
                 </button>

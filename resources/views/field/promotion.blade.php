@@ -5,7 +5,12 @@
   <div class="row">
     <div class="col-sm-12">
       <div class="panel panel-default">
-        <div class="panel-heading">Field Management</div>
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-8">Field Management: Promotion</div>
+            <div class="col-xs-4 text-right"><a href="{{action('FieldController@logout')}}">Logout</a></div>
+          </div>
+        </div>
         <div class="panel-body">
           <div class="col-sm-12 text-center">
             <a href="{{action('FieldController@home')}}">
