@@ -27,7 +27,15 @@
       @endif
     </div>
     @endif
-
+    @if(Session::has('success'))
+    @foreach(Session::get('success') as $success)
+    <div class="alert alert-success text-center" role="alert">{{$success}}</div>
+    @endforeach
+    {{Session::forget('success')}}
+    @endif
+    @foreach($errors->all() as $message)
+    <div class="alert alert-danger text-center" role="alert">{{$message}}</div>
+    @endforeach
     <div class="container">
       @yield('content')
     </div>

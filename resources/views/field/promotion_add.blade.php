@@ -36,7 +36,7 @@
                 {{csrf_field()}}
                 <input type="hidden" name="id" value="{{isset($promotion) ? $promotion->id : ''}}" />
                 <input type="hidden" name="field_id" value="{{session('field')->id}}" />
-                <button type="submit" class="btn btn-success btn-block">
+                <button type="submit" onclick="return confirm('Do you want to save the promotion?')" class="btn btn-success btn-block">
                   Confirm
                 </button>
               </div>

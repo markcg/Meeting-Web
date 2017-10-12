@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -101,7 +102,10 @@ class AdminController extends Controller
 
     public function confirm_field($id)
     {
-        $this->field_confirm($id);
+        $field = $this->field_confirm($id);
+        if($field && $field->confirm == 1) {
+            session(['success' => ['The new field owner account has been approving from the system']]);
+        }
         return redirect('/admin/fields');
     }
 
@@ -128,10 +132,41 @@ class AdminController extends Controller
         }
     }
 
+    public function change_password_rule()
+    {
+        return [
+        'required' => 'Please fill in all required fields',
+        'old_password.alpha_dash' => 'Old Password is incorrect format. Please use only a-z, A-Z and 0-9',
+        'old_password.min' => 'Please input 4-10 characters',
+        'old_password.max' => 'Please input 4-10 characters',
+        'new_password.alpha_dash' => 'New Password is incorrect format. Please use only a-z, A-Z and 0-9',
+        'new_password.min' => 'Please input 4-10 characters',
+        'new_password.max' => 'Please input 4-10 characters',
+        're_password.alpha_dash' => 'Re Password is incorrect format. Please use only a-z, A-Z and 0-9',
+        're_password.min' => 'Please input 4-10 characters',
+        're_password.max' => 'Please input 4-10 characters',
+        ];
+    }
     public function handle_change_password(Request $request)
     {
+        $validator = Validator::make(
+            $request->all(), [
+            'old_password' => 'required|alpha_dash|min:4|max:10',
+            'new_password' => 'required|alpha_dash|min:4|max:10',
+            're_password' => 'required|alpha_dash|min:4|max:10',
+            ],
+            $this->change_password_rule()
+        );
+        if ($validator->fails()) {
+            return redirect('/admin/change-password')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         if($request->input('new_password') !== $request->input('re_password')) {
-            return redirect('/admin/change-password');
+            return redirect('/admin/change-password')
+            ->withErrors(['Password and Re-Password are not match.'])
+            ->withInput();;
         }
 
         $model = $this->account_change_password($request);
@@ -144,6 +179,32 @@ class AdminController extends Controller
 
     public function handle_edit_customer(Request $request)
     {
+        $messages = [
+        'name.string' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
+        'name.min' => 'Please input 4-30 characters',
+        'name.max' => 'Please input 4-30 characters',
+        'email.email'  => 'Email is incorrect format. Please use correct email format',
+        'email.min' => 'Please input 10-30 characters',
+        'email.max' => 'Please input 10-30 characters',
+        'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
+        'phone_number.max' => 'Please input 10 characters',
+        'phone_number.min' => 'Please input 10 characters',
+        ];
+        $validator = Validator::make(
+            $request->all(), [
+            'name' => 'required|string|min:4|max:30',
+            'email' => 'required|email|min:10|max:30',
+            'phone_number' => 'required|digits:10|min:10|max:10'
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return redirect('/admin/customer/' . $request->input('id'))
+                    ->withErrors($validator)
+                    ->withInput();
+        }
+
         if ($this->customer_edit($request)) {
             return redirect('/admin/customer/' . $request->input('id'));
         } else {
@@ -153,6 +214,40 @@ class AdminController extends Controller
 
     public function handle_edit_field(Request $request)
     {
+        $messages = [
+        'name.string' => 'Field name is incorrect format. Please use only a-z, A-Z, 0-9 and space',
+        'name.min' => 'Please input 4-30 characters',
+        'name.max' => 'Please input 4-30 characters',
+        'description.string'  => 'Field description is incorrect format. Please use only a-z, A-Z, 0-9 and space',
+        'description.min' => 'Please input 10-30 characters',
+        'description.max' => 'Please input 10-30 characters',
+        'address.string'  => 'Field address is incorrect format. Please use only a-z, A-Z, 0-9 and space',
+        'address.min' => 'Please input 20-100 characters',
+        'address.max' => 'Please input 20-100 characters',
+        'email.email'  => 'Email is incorrect format. Please use correct email format',
+        'email.min' => 'Please input 10-30 characters',
+        'email.max' => 'Please input 10-30 characters',
+        'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
+        'phone_number.max' => 'Please input 10 characters',
+        'phone_number.min' => 'Please input 10 characters',
+        ];
+        $validator = Validator::make(
+            $request->all(), [
+            'name' => 'required|string|min:4|max:30',
+            'description' => 'required|string|min:10|max:30',
+            'address' => 'required|string|min:20|max:100',
+            'email' => 'required|email|min:10|max:30',
+            'phone_number' => 'required|digits:10|min:10|max:10'
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return redirect('/admin/field/' . $request->input('id'))
+                  ->withErrors($validator)
+                  ->withInput();
+        }
+
         if ($this->field_edit($request)) {
             return redirect('/admin/field/' . $request->input('id'));
         } else {

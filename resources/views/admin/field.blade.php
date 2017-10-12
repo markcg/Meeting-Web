@@ -8,7 +8,7 @@
         <div class="panel-heading">Admin Management</div>
         <div class="panel-body">
           <div class="col-sm-12 text-center">
-            <a href="{{action('AdminController@customers')}}">
+            <a href="{{action('AdminController@fields')}}">
               Back
             </a>
           </div>

@@ -32,11 +32,16 @@
               </table>
             </div>
             <div class="col-sm-12">
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 {{csrf_field()}}
                 <input type="hidden" name="id" value="{{isset($model) ? $model->id : ''}}" />
-                <button type="submit" class="btn btn-success btn-block">
+                <button type="submit" onclick="return confirm('Do you want to edit profile?')" class="btn btn-success btn-block">
                   Save
+                </button>
+              </div>
+              <div class="col-sm-6">
+                <button type="reset" onclick="return confirm('Do you want to cancel?')" class="btn btn-info btn-block">
+                  Cancel
                 </button>
               </div>
             </div>

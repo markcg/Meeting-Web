@@ -52,7 +52,8 @@
                     if($item->confirm == 1) {
                         $active = 'Active';
                     } ?>
-                    <a href="{{action('AdminController@confirm_field', ['id' => $item->id])}}">
+                    <a <?php if($active != 'Active') :?> onclick="return confirm('Do you want to approve this field owner?');" <?php 
+                   endif;?> href="{{action('AdminController@confirm_field', ['id' => $item->id])}}">
                       <button class="btn btn-<?php echo $color;?> btn-block">
                         <?php echo $active;?>
                       </button>
@@ -66,7 +67,7 @@
                     </a>
                   </td>
                   <td>
-                    <a onclick="return confirm('Confrim delete?');" href="{{action('AdminController@delete_field', ['id' => $item->id])}}">
+                    <a onclick="return confirm('Do you want to remove this account?');" href="{{action('AdminController@delete_field', ['id' => $item->id])}}">
                       <button class="btn btn-info btn-block">
                         Delete
                       </button>

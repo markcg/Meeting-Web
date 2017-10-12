@@ -22,7 +22,7 @@ class FieldTableSeeder extends Seeder
             'password' => '123456',
             'latitude' => '18.796143',
             'longitude' => '98.979263',
-            'confirm' => '1',
+            'confirm' => '0',
             ]
         );
         DB::table('field')->insert(

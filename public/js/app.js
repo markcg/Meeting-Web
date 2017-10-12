@@ -33476,7 +33476,7 @@ window.meetingApp = function () {
       button.text("Reserved");
       button.addClass("btn btn-warning");
       button.click(function () {
-        return confirm("Remove this reserved?");
+        return confirm("Do you want to cancel the reservation?");
       });
     } else {
       button.text("Available");
@@ -33504,7 +33504,7 @@ window.meetingApp = function () {
       var row = $("<tr></tr>");
       for (var k = 0; k <= 7; k++) {
         var data = $("<td></td>");
-        var haveSchedule = _.find(app.schedules[k], { time: i + 8 });
+        var haveSchedule = _.find(app.schedules[k - 1], { time: i + 8 });
         // console.log(app.schedules[k]);
         var button = null;
         var date = moment(current).add(k - 1, "days").format("YYYY-MM-DD");

@@ -43,7 +43,7 @@
                     </a>
                   </td>
                   <td>
-                    <a onclick="return confirm('Confrim delete?')" href="{{action('AdminController@delete_customer', ['id' => $item->id])}}">
+                    <a onclick="return confirm('Do you want to remove this account?')" href="{{action('AdminController@delete_customer', ['id' => $item->id])}}">
                       <button class="btn btn-info btn-block">
                         Delete
                       </button>

@@ -27,7 +27,7 @@ class TeamController extends Controller
     {
         try {
             $model = new Team();
-            $model->customer_id = $request->input('customer_id');
+            $model->customer_id = $request->input(' ');
             $model->name = $request->input('name');
             $model->description = $request->input('description');
             $model->save();

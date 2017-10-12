@@ -70,7 +70,7 @@ class MeetingController extends Controller
     {
         try {
             $keyword = $request->input('keyword');
-            $result = Meeting::where('name', 'like', "%$username%")->get();
+            $result = Meeting::where('name', 'like', "%$keyword%")->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;

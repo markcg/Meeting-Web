@@ -19,6 +19,7 @@ class CreateScheduleTable extends Migration
                 $table->integer('field_id');
                 $table->date('date');
                 $table->text('schedule');
+                $table->integer('status', false)->nullable();
                 $table->integer('meeting_id', false)->nullable();
                 $table->integer('customer_id', false)->nullable();
                 $table->integer('time', false)->nullable();

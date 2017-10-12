@@ -75,7 +75,7 @@ window.meetingApp = (function() {
       button.text("Reserved");
       button.addClass("btn btn-warning");
       button.click(() => {
-        return confirm("Remove this reserved?");
+        return confirm("Do you want to cancel the reservation?");
       });
     } else {
       button.text("Available");
@@ -103,7 +103,7 @@ window.meetingApp = (function() {
       const row = $("<tr></tr>");
       for (let k = 0; k <= 7; k++) {
         const data = $("<td></td>");
-        const haveSchedule = _.find(app.schedules[k], { time: i + 8 });
+        const haveSchedule = _.find(app.schedules[k - 1], { time: i + 8 });
         // console.log(app.schedules[k]);
         let button = null;
         const date = moment(current)
