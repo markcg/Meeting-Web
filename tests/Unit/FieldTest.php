@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 
 use App\Http\Controllers\FieldController;
 use App\Models\Field;
@@ -45,11 +46,17 @@ class FieldTest extends TestCase
 
     }
 
-    public function testFieldHomeLogin()
+    public function testFieldHomeLogout()
+    {
+        $response = $this->withSession(['field' => $this->prepareField()])->get('field/logout');
+        $response->assertStatus(302);
+        $response->assertRedirect('field/login');
+    }
+
+    public function testFieldHome()
     {
         $response = $this->withSession(['field' => $this->prepareField()])->get('field');
         $response->assertStatus(200);
-
     }
 
     public function testFieldSchedule()
@@ -114,7 +121,6 @@ class FieldTest extends TestCase
         $response->assertStatus(200);
 
         Promotion::where('title', '=', 'testFieldPromotionEdit')->delete();
-
     }
     public function testFieldPromotionEditInvalid()
     {
@@ -134,8 +140,149 @@ class FieldTest extends TestCase
         $response->assertStatus(200);
 
     }
+    public function testFieldChangePassword()
+    {
+        $response = $this
+            ->withSession(['field' => $this->prepareField()])
+            ->get('field/change-password');
+        $response->assertStatus(200);
+    }
 
     /* Post Method */
+    public function testFieldLoginInvalid()
+    {
+        $response = $this
+            ->withSession(['field' => $this->prepareField()])
+            ->post(
+                'field/login',
+                [
+                'username' => '',
+                ]
+            );
+        $response->assertStatus(302);
+        $response->assertRedirect('field/login');
+        $response->assertSessionHasErrors('username');
+        $response->assertSessionHasErrors('password');
+    }
+
+    public function testFieldLoginConfirmValid()
+    {
+        $model = new Field();
+        $model->username = 'field_test';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->confirm = 1;
+        $model->save();
+
+        $response = $this
+            // ->withSession(['field' => $this->prepareField()])
+            ->post(
+                'field/login',
+                [
+                'username' => 'field_test',
+                'password' => '123456',
+                ]
+            );
+        $response->assertStatus(302);
+        $response->assertRedirect('field');
+        Field::where('username', '=', 'field_test')->delete();
+    }
+    public function testFieldLoginNotConfirmInvalid()
+    {
+        $model = new Field();
+        $model->username = 'field_test';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $response = $this
+            // ->withSession(['field' => $this->prepareField()])
+            ->post(
+                'field/login',
+                [
+                'username' => 'field_test',
+                'password' => '123456',
+                ]
+            );
+        $response->assertStatus(302);
+        $response->assertRedirect('field/login');
+        Field::where('username', '=', 'field_test')->delete();
+    }
+    public function testFieldChangePasswordInvalid()
+    {
+        $model = new Field();
+        $model->username = 'field_change_invalid';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $response = $this
+            ->withSession(['field' => $this->prepareField()])
+            ->post(
+                'field/change-password',
+                [
+                'id' => $model->id,
+                'old_password' => '',
+                'new_password' => '',
+                're_password' => '',
+                ]
+            );
+        $response->assertStatus(302);
+        $response->assertRedirect('field/change-password');
+        $response->assertSessionHasErrors('old_password');
+        $response->assertSessionHasErrors('new_password');
+        $response->assertSessionHasErrors('re_password');
+        Field::where('username', '=', 'field_change_invalid')->delete();
+    }
+
+    public function testFieldChangePasswordValid()
+    {
+        $model = new Field();
+        $model->username = 'field_change_valid';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $response = $this
+            ->withSession(['field' => $this->prepareField()])
+            ->post(
+                'field/change-password',
+                [
+                  'id' => $model->id,
+                  'old_password' => '123456',
+                  'new_password' => '1234567',
+                  're_password' => '1234567',
+                ]
+            );
+        $response->assertStatus(302);
+        $response->assertRedirect('field');
+        Field::where('username', '=', 'field_change_valid')->delete();
+    }
+
     public function testFieldPromotionAddPostInvalid()
     {
         $response = $this
@@ -267,16 +414,299 @@ class FieldTest extends TestCase
         );
 
     }
-    public function testFieldChangePassword()
-    {
-        $response = $this
-            ->withSession(['field' => $this->prepareField()])
-            ->get('field/change-password');
-        $response->assertStatus(200);
-
-    }
 
     /* API Method*/
+    /* --Field Login*/
+    public function testFieldAPILoginInvalid()
+    {
+        $model = new Field();
+        $model->username = 'field_login_valid';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/login',
+            'post',
+            [
+            'username' => 'field_login_valid',
+            ]
+        );
+        $result = $controller->account_login($request);
+        $this->assertFalse($result);
+        Field::where('username', '=', 'field_login_valid')->delete();
+    }
+
+    public function testFieldAPILoginValid()
+    {
+        $model = new Field();
+        $model->username = 'field_login_valid';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/login',
+            'post',
+            [
+            'username' => 'field_login_valid',
+            'password' => '123456',
+            ]
+        );
+        $result = $controller->account_login($request);
+        $this->assertInstanceOf(Field::class, $result);
+        Field::where('username', '=', 'field_login_valid')->delete();
+    }
+
+    /* --Field Register */
+    public function testFieldAPIRegisterInvalid()
+    {
+        $controller = new FieldController();
+        $request = Request::create(
+            '/register',
+            'post',
+            [
+            'description' => '',
+            'email' => '',
+            'address' => '',
+            'phone_number' => '',
+            'username' => '',
+            'password' => '',
+            'password' => '',
+            'latitude' => '',
+            'longitude' => '',
+            ]
+        );
+        $result = $controller->account_register($request);
+        $this->assertFalse($result);
+    }
+
+    public function testFieldAPIRegisterValid()
+    {
+        $controller = new FieldController();
+        $request = Request::create(
+            '/register',
+            'post',
+            [
+            'name' => 'field_register_valid',
+            'description' => 'field_register_valid',
+            'email' => 'field@register.com',
+            'address' => '100 Address',
+            'phone_number' => '0123456789',
+            'username' => 'field',
+            'password' => '123456',
+            'latitude' => '0.1',
+            'longitude' => '0.1',
+            ]
+        );
+        $result = $controller->account_register($request);
+        $this->assertInstanceOf(Field::class, $result);
+        $this->assertDatabaseHas(
+            'field', [
+            'name' => 'field_register_valid'
+            ]
+        );
+        Field::where('name', '=', 'field_register_valid')->delete();
+    }
+
+    /* --Field Edit*/
+    public function testFieldAPIEditInvalid()
+    {
+        $controller = new FieldController();
+        $request = Request::create(
+            '/edit',
+            'post',
+            [
+              'id' => '9999',
+              'name' => 'field_edit_valid',
+              'description' => 'field_edit_valid',
+              'email' => 'field@register.com',
+              'address' => '100 Address',
+              'phone_number' => '0123456789',
+              'username' => 'field',
+              'password' => '123456',
+              'latitude' => '0.1',
+              'longitude' => '0.1',
+            ]
+        );
+        $result = $controller->account_edit($request);
+        $this->assertFalse($result);
+    }
+
+    public function testFieldAPIEditValid()
+    {
+        $model = new Field();
+        $model->username = 'field_edit_valid';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/edit',
+            'post',
+            [
+            'id' => $model->id,
+            'name' => 'field_edit_valid',
+            'description' => 'field_edit_valid',
+            'email' => 'field@register.com',
+            'address' => '100 Address',
+            'phone_number' => '0123456789',
+            'username' => 'field',
+            'password' => '123456',
+            'latitude' => '0.1',
+            'longitude' => '0.1',
+            ]
+        );
+        $result = $controller->account_edit($request);
+        $this->assertInstanceOf(Field::class, $result);
+        Field::where('name', '=', 'field_edit_valid')->delete();
+    }
+
+    /* --Field Change Password*/
+    public function testFieldAPIChangePasswordInvalid()
+    {
+        $controller = new FieldController();
+        $request = Request::create(
+            '/change-password',
+            'post',
+            [
+              'id' => '9999',
+              'old_password' => '123456',
+              'new_password' => '1234567',
+            ]
+        );
+        $result = $controller->account_change_password($request);
+        $this->assertFalse($result);
+    }
+
+    public function testFieldAPIChangePasswordValid()
+    {
+        $model = new Field();
+        $model->username = 'field_api_change_valid';
+        $model->password = '123456';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/change-password',
+            'post',
+            [
+            'id' => $model->id,
+            'old_password' => '123456',
+            'new_password' => '1234567',
+            ]
+        );
+        $result = $controller->account_change_password($request);
+        $this->assertTrue($result);
+        Field::where('name', '=', 'field_api_change_valid')->delete();
+    }
+
+    /* --Field Forgot Password*/
+    public function testFieldAPIForgotInvalid()
+    {
+        // $model = new Field();
+        // $model->username = 'field_api_forgot_invalid';
+        // $model->email = 'a@a.com';
+        // $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/forgot-password',
+            'post',
+            [
+              'username' => 'field_api_forgot_invalid',
+              'email' => 'a@a.com',
+            ]
+        );
+        $result = $controller->account_forget($request);
+        $this->assertFalse($result);
+    }
+
+    public function testFieldAPIForgotWrongEmailInvalid()
+    {
+        $model = new Field();
+        $model->username = 'field_api_email_invalid';
+        $model->email = 'a@a.com';
+        $model->password = '';
+        $model->name = '';
+        $model->description = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/forgot-password',
+            'post',
+            [
+              'username' => 'field_api_email_invalid',
+              'email' => 'a@b.com',
+            ]
+        );
+        $result = $controller->account_forget($request);
+        $this->assertFalse($result);
+        Field::where('name', '=', 'field_api_email_invalid')->delete();
+    }
+
+    public function testFieldAPIForgotValid()
+    {
+        $model = new Field();
+        $model->username = 'field_api_email_valid';
+        $model->email = 'a@a.com';
+        $model->password = '';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
+
+        $controller = new FieldController();
+        $request = Request::create(
+            '/forgot-password',
+            'post',
+            [
+            'username' => 'field_api_email_invalid',
+            'email' => 'a@a.com',
+            ]
+        );
+        $result = $controller->account_forget($request, true);
+        $this->assertTrue($result);
+        Field::where('name', '=', 'field_api_email_valid')->delete();
+    }
+
     /* --Promotion Add*/
     public function testFieldAPIAddPromotionValid()
     {
@@ -418,5 +848,33 @@ class FieldTest extends TestCase
         $controller = new FieldController();
         $result = $controller->schedule_delete(null);
         $this->assertFalse($result);
+    }
+
+    /* -- Search */
+    public function testFieldAPISearchValid()
+    {
+        $request = Request::create(
+            '/search',
+            'post',
+            [
+            'keyword' => 'field_a',
+            ]
+        );
+        $controller = new FieldController();
+        $result = $controller->search($request);
+        $this->assertInstanceOf(Collection::class, $result);
+    }
+    public function testFieldAPISearchInvalid()
+    {
+        $request = Request::create(
+            '/search',
+            'post',
+            [
+            'keyword' => '',
+            ]
+        );
+        $controller = new FieldController();
+        $result = $controller->search($request);
+        $this->assertInstanceOf(Collection::class, $result);
     }
 }
