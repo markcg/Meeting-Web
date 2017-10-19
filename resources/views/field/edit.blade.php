@@ -47,7 +47,7 @@
               <div class="col-sm-12">
                 {{csrf_field()}}
                 <input type="hidden" name="id" value="{{isset($model) ? $model->id : ''}}" />
-                <button type="submit" class="btn btn-success btn-block">
+                <button type="submit" onclick="return confirm('Do you want to edit profile?')" class="btn btn-success btn-block">
                   Save
                 </button>
               </div>

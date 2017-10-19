@@ -680,31 +680,31 @@ class FieldTest extends TestCase
 
     public function testFieldAPIForgotValid()
     {
-        $model = new Field();
-        $model->username = 'field_api_email_valid';
-        $model->email = 'a@a.com';
-        $model->password = '';
-        $model->name = '';
-        $model->description = '';
-        $model->email = '';
-        $model->address = '';
-        $model->phone_number = '';
-        $model->latitude = '';
-        $model->longitude = '';
-        $model->save();
+        // $model = new Field();
+        // $model->username = 'fieldApiForgetValid';
+        // $model->email = 'forget@a.com';
+        // $model->password = '';
+        // $model->name = '';
+        // $model->description = '';
+        // $model->email = '';
+        // $model->address = '';
+        // $model->phone_number = '';
+        // $model->latitude = '';
+        // $model->longitude = '';
+        // $model->save();
 
         $controller = new FieldController();
         $request = Request::create(
             '/forgot-password',
             'post',
             [
-            'username' => 'field_api_email_invalid',
-            'email' => 'a@a.com',
+            'username' => 'field_a',
+            'email' => 'field_a@f.com',
             ]
         );
         $result = $controller->account_forget($request, true);
         $this->assertTrue($result);
-        Field::where('name', '=', 'field_api_email_valid')->delete();
+        // Field::where('name', '=', 'fieldApiForgetValid')->delete();
     }
 
     /* --Promotion Add*/

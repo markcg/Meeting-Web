@@ -399,23 +399,25 @@ class FieldController extends Controller
         }
     }
 
-    public function account_forget(Request $request)
+    public function account_forget(Request $request, $no_mail = false)
     {
         try {
             $account = Field::where('username', '=', $request->input('username'))->first();
             if(is_null($account)) {
                 return false;
-            } else if($account->email != $request->input('email')) {
+            } else if($account->email !== $request->input('email')) {
                 return false;
             }else {
-                $tempPassword = str_random(10);
-                $message = 'Your new password is ' . $tempPassword;
-                Mail::raw(
-                    $message, $account, function ($message) {
-                        $message->from('fieldfinder.mailserver@gmail.com', 'Field Finder Forget Password');
-                        $message->to($request->input('email'));
-                    }
-                );
+                if(!$no_mail) {
+                    $tempPassword = str_random(10);
+                    $message = 'Your new password is ' . $tempPassword;
+                    Mail::raw(
+                        $message, $account, function ($message) {
+                            $message->from('fieldfinder.mailserver@gmail.com', 'Field Finder Forget Password');
+                            $message->to($request->input('email'));
+                        }
+                    );
+                }
                 return true;
             }
         } catch (\Exception $e) {

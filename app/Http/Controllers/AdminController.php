@@ -112,23 +112,61 @@ class AdminController extends Controller
     /* Post Method */
     public function handle_login(Request $request)
     {
+        $messages = [
+        'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
+        'password.required'  => 'A message is required',
+        ];
+        $validator = Validator::make(
+            $request->all(), [
+            'username' => 'required|alpha_dash|max:10',
+            'password' => 'required',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return redirect('/admin/login')
+                    ->withErrors($validator)
+                    ->withInput();
+        }
+
         $login = $this->account_login($request);
         if (!empty($login)) {
             session(['admin' => $login]);
             return redirect('/admin');
         } else {
-            return redirect('/admin/login');
+            return redirect('/admin/login')
+            ->withErrors(['Username or password is incorrect'])
+            ->withInput();
         }
     }
 
     public function handle_edit(Request $request)
     {
+        $messages = [
+        'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
+        ];
+        $validator = Validator::make(
+            $request->all(), [
+            'username' => 'required|alpha_dash|max:10',
+            ],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            return redirect('/admin/edit')
+                  ->withErrors($validator)
+                  ->withInput();
+        }
+
         $model = $this->account_edit($request);
         if (!empty($model)) {
             session(['admin' => $model]);
             return redirect('/admin/edit');
         } else {
-            return redirect('/admin/edit');
+            return redirect('/admin/edit')
+            ->withErrors(['There is error during saving data.'])
+            ->withInput();;
         }
     }
 
