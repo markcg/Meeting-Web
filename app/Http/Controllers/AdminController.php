@@ -6,6 +6,9 @@ use Validator;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Validators\AdminValidator;
+use App\Http\Controllers\Validators\CustomerValidator;
+use App\Http\Controllers\Validators\FieldValidator;
 use App\Models\Admin;
 use App\Models\Customer;
 use App\Models\Field;
@@ -112,18 +115,7 @@ class AdminController extends Controller
     /* Post Method */
     public function handle_login(Request $request)
     {
-        $messages = [
-        'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
-        'password.required'  => 'A message is required',
-        ];
-        $validator = Validator::make(
-            $request->all(), [
-            'username' => 'required|alpha_dash|max:10',
-            'password' => 'required',
-            ],
-            $messages
-        );
-
+        $validator = AdminValidator::validate_login($request);
         if ($validator->fails()) {
             return redirect('/admin/login')
                     ->withErrors($validator)
@@ -143,16 +135,9 @@ class AdminController extends Controller
 
     public function handle_edit(Request $request)
     {
-        $messages = [
-        'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
-        ];
-        $validator = Validator::make(
-            $request->all(), [
-            'username' => 'required|alpha_dash|max:10',
-            ],
-            $messages
-        );
-
+        $old = Admin::find($request->input('id'));
+        $valid_old_name = $old->username == $request->input('username');
+        $validator = AdminValidator::validate_edit($request, $valid_old_name);
         if ($validator->fails()) {
             return redirect('/admin/edit')
                   ->withErrors($validator)
@@ -170,31 +155,9 @@ class AdminController extends Controller
         }
     }
 
-    public function change_password_rule()
-    {
-        return [
-        'required' => 'Please fill in all required fields',
-        'old_password.alpha_dash' => 'Old Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'old_password.min' => 'Please input 4-10 characters',
-        'old_password.max' => 'Please input 4-10 characters',
-        'new_password.alpha_dash' => 'New Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'new_password.min' => 'Please input 4-10 characters',
-        'new_password.max' => 'Please input 4-10 characters',
-        're_password.alpha_dash' => 'Re Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        're_password.min' => 'Please input 4-10 characters',
-        're_password.max' => 'Please input 4-10 characters',
-        ];
-    }
     public function handle_change_password(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(), [
-            'old_password' => 'required|alpha_dash|min:4|max:10',
-            'new_password' => 'required|alpha_dash|min:4|max:10',
-            're_password' => 'required|alpha_dash|min:4|max:10',
-            ],
-            $this->change_password_rule()
-        );
+        $validator = AdminValidator::validate_change_password($request);
         if ($validator->fails()) {
             return redirect('/admin/change-password')
                 ->withErrors($validator)
@@ -217,25 +180,9 @@ class AdminController extends Controller
 
     public function handle_edit_customer(Request $request)
     {
-        $messages = [
-        'name.string' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
-        'name.min' => 'Please input 4-30 characters',
-        'name.max' => 'Please input 4-30 characters',
-        'email.email'  => 'Email is incorrect format. Please use correct email format',
-        'email.min' => 'Please input 10-30 characters',
-        'email.max' => 'Please input 10-30 characters',
-        'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
-        'phone_number.max' => 'Please input 10 characters',
-        'phone_number.min' => 'Please input 10 characters',
-        ];
-        $validator = Validator::make(
-            $request->all(), [
-            'name' => 'required|string|min:4|max:30',
-            'email' => 'required|email|min:10|max:30',
-            'phone_number' => 'required|digits:10|min:10|max:10'
-            ],
-            $messages
-        );
+        $old = Customer::find($request->input('id'));
+        $valid_old_name = $old->name == $request->input('name');
+        $validator = CustomerValidator::validate_edit($request, $valid_old_name);
 
         if ($validator->fails()) {
             return redirect('/admin/customer/' . $request->input('id'))
@@ -252,33 +199,9 @@ class AdminController extends Controller
 
     public function handle_edit_field(Request $request)
     {
-        $messages = [
-        'name.string' => 'Field name is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'name.min' => 'Please input 4-30 characters',
-        'name.max' => 'Please input 4-30 characters',
-        'description.string'  => 'Field description is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'description.min' => 'Please input 10-30 characters',
-        'description.max' => 'Please input 10-30 characters',
-        'address.string'  => 'Field address is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'address.min' => 'Please input 20-100 characters',
-        'address.max' => 'Please input 20-100 characters',
-        'email.email'  => 'Email is incorrect format. Please use correct email format',
-        'email.min' => 'Please input 10-30 characters',
-        'email.max' => 'Please input 10-30 characters',
-        'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
-        'phone_number.max' => 'Please input 10 characters',
-        'phone_number.min' => 'Please input 10 characters',
-        ];
-        $validator = Validator::make(
-            $request->all(), [
-            'name' => 'required|string|min:4|max:30',
-            'description' => 'required|string|min:10|max:30',
-            'address' => 'required|string|min:20|max:100',
-            'email' => 'required|email|min:10|max:30',
-            'phone_number' => 'required|digits:10|min:10|max:10'
-            ],
-            $messages
-        );
+        $old = Field::find($request->input('id'));
+        $valid_old_name = $old->name == $request->input('name');
+        $validator = FieldValidator::validate_edit($request, $valid_old_name);
 
         if ($validator->fails()) {
             return redirect('/admin/field/' . $request->input('id'))

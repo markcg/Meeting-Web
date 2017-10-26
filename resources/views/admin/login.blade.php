@@ -13,11 +13,11 @@
                 <tbody id="schedule-list">
                   <tr>
                     <td>Username</td>
-                    <td><input required type="text" class="form-control" name="username" /></td>
+                    <td><input required type="text" maxlength="10" class="form-control" name="username" /></td>
                   </tr>
                   <tr>
                     <td>Password</td>
-                    <td><input required type="password" class="form-control" name="password" /></td>
+                    <td><input required type="password" maxlength="10" class="form-control" name="password" /></td>
                   </tr>
                 </tbody>
               </table>

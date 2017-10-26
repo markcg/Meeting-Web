@@ -9,6 +9,10 @@ use App\Models\Customer;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+    }
+
     /* --Account */
     public function account_login(Request $request)
     {

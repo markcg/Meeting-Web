@@ -6,6 +6,7 @@ use Validator;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Validators\FieldValidator;
 use App\Models\Field;
 use App\Models\Promotion;
 use App\Models\Schedule;
@@ -125,18 +126,7 @@ class FieldController extends Controller
     /* Post Method */
     public function handle_login(Request $request)
     {
-        $messages = [
-        'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
-        'password.required'  => 'A message is required',
-        ];
-        $validator = Validator::make(
-            $request->all(), [
-            'username' => 'required|alpha_dash|max:10',
-            'password' => 'required',
-            ],
-            $messages
-        );
-
+        $validator = FieldValidator::validate_login($request);
         if ($validator->fails()) {
             return redirect('/field/login')
                       ->withErrors($validator)
@@ -160,31 +150,9 @@ class FieldController extends Controller
         }
     }
 
-    public function change_password_rule()
-    {
-        return [
-        'required' => 'Please fill in all required fields',
-        'old_password.alpha_dash' => 'Old Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'old_password.min' => 'Please input 4-10 characters',
-        'old_password.max' => 'Please input 4-10 characters',
-        'new_password.alpha_dash' => 'New Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'new_password.min' => 'Please input 4-10 characters',
-        'new_password.max' => 'Please input 4-10 characters',
-        're_password.alpha_dash' => 'Re Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        're_password.min' => 'Please input 4-10 characters',
-        're_password.max' => 'Please input 4-10 characters',
-        ];
-    }
     public function handle_change_password(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(), [
-            'old_password' => 'required|alpha_dash|min:4|max:10',
-            'new_password' => 'required|alpha_dash|min:4|max:10',
-            're_password' => 'required|alpha_dash|min:4|max:10',
-            ],
-            $this->change_password_rule()
-        );
+        $validator = FieldValidator::validate_change_password($request);
         if ($validator->fails()) {
             return redirect('/field/change-password')
                   ->withErrors($validator)
@@ -219,8 +187,17 @@ class FieldController extends Controller
 
     public function handle_edit(Request $request)
     {
+        $old = Field::find($request->input('id'));
+        $valid_old_name = $old->name == $request->input('name');
+        $valid_old_username = $old->username == $request->input('username');
+        $validator = FieldValidator::validate_detail_edit($request, $valid_old_name, $valid_old_username);
+        if ($validator->fails()) {
+            return redirect('/admin/edit')
+              ->withErrors($validator)
+              ->withInput();
+        }
+
         $model = $this->account_edit($request);
-        echo var_dump($model);
         if (!empty($model)) {
             session(['field' => $model]);
             return redirect('/field/edit');
@@ -228,31 +205,9 @@ class FieldController extends Controller
             return redirect('/field/edit');
         }
     }
-    public function promotion_rule()
-    {
-        return [
-        'title.unique' => 'Promotion name is already in use!',
-        'title.alpha_dash' => 'Promotion name is incorrect format. Please use only a-z, A-Z and 0-9',
-        'title.min' => 'Please input 4-30 characters',
-        'title.max' => 'Please input 4-30 characters',
-        'price.numeric' => 'Price is incorrect format. Please use only 0-9 and comma',
-        'price.min' => 'Please input 2-10 characters',
-        'price.max' => 'Please input 2-10 characters',
-        'description.alpha_dash' => 'Promotion description is incorrect format. Please use only a-z, A-Z and 0-9',
-        'description.min' => 'Please input 10-250 characters',
-        'description.max' => 'Please input 10-250 characters',
-        ];
-    }
     public function add_promotion(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(), [
-            'title' => 'required|alpha_dash|min:4|max:30',
-            'price' => 'required|numeric|min:10|max:9999999999',
-            'description' => 'required|alpha_dash|min:10|max:250',
-            ],
-            $this->promotion_rule()
-        );
+        $validator = FieldValidator::validate_promotion_add($request);
         if ($validator->fails()) {
             return redirect('/field/promotions/add')
                     ->withErrors($validator)
@@ -270,15 +225,7 @@ class FieldController extends Controller
 
     public function edit_promotion(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(), [
-            'title' => 'required|alpha_dash|min:4|max:30',
-            'price' => 'required|numeric|min:2|max:10',
-            'description' => 'required|alpha_dash|min:10|max:250',
-            ],
-            $this->promotion_rule()
-        );
-
+        $validator = FieldValidator::validate_promotion_edit($request);
         if ($validator->fails()) {
             return redirect('/field/promotions/edit/' . $request->input('id'))
                   ->withErrors($validator)

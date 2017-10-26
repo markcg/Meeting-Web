@@ -18,7 +18,7 @@
                 <tbody id="schedule-list">
                   <tr>
                     <td>Username</td>
-                    <td><input required type="text" class="form-control" name="username" value="{{isset($model) ? $model->username : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="username" maxlength="10" value="{{isset($model) ? $model->username : ''}}" /></td>
                   </tr>
                 </tbody>
               </table>
@@ -27,7 +27,7 @@
               <div class="col-sm-12">
                 {{csrf_field()}}
                 <input type="hidden" name="id" value="{{session('admin')->id}}" />
-                <button type="submit" class="btn btn-success btn-block">
+                <button type="submit" onclick="return confirm('Do you want to edit username?')" class="btn btn-success btn-block">
                   Save
                 </button>
               </div>

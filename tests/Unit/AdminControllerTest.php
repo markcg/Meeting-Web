@@ -14,7 +14,7 @@ use App\Models\Field;
 use App\Models\Customer;
 use App\Models\Admin;
 
-class AdminTest extends TestCase
+class AdminControllerTest extends TestCase
 {
     // use WithoutMiddleware;
     public function setUp()
@@ -31,7 +31,7 @@ class AdminTest extends TestCase
      * @return void
      */
     /* Get Method */
-    private function prepareField()
+    private function prepareAdmin()
     {
         $admin = new Admin();
         $admin->id = 1;
@@ -47,7 +47,7 @@ class AdminTest extends TestCase
 
     public function testAdminHomeLogin()
     {
-        $response = $this->withSession(['admin' => $this->prepareField()])->get('admin');
+        $response = $this->withSession(['admin' => $this->prepareAdmin()])->get('admin');
         $response->assertStatus(200);
 
     }
@@ -55,7 +55,7 @@ class AdminTest extends TestCase
     public function testAdminEdit()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get('admin/edit');
         $response->assertStatus(200);
 
@@ -64,7 +64,7 @@ class AdminTest extends TestCase
     public function testAdminCustomers()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get('admin/customers');
         $response->assertStatus(200);
 
@@ -73,7 +73,7 @@ class AdminTest extends TestCase
     public function testAdminCustomer()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get('admin/customer/1');
         $response->assertStatus(200);
 
@@ -82,7 +82,7 @@ class AdminTest extends TestCase
     public function testAdminCustomerEditInvalid()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->post(
                 'admin/customer/1',
                 [
@@ -102,7 +102,7 @@ class AdminTest extends TestCase
     public function testAdminCustomerEditValid()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->post(
                 'admin/customer/1',
                 [
@@ -126,7 +126,7 @@ class AdminTest extends TestCase
     public function testAdminFields()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get('admin/fields');
         $response->assertStatus(200);
 
@@ -135,7 +135,7 @@ class AdminTest extends TestCase
     public function testAdminField()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get('admin/field/1');
         $response->assertStatus(200);
     }
@@ -143,7 +143,7 @@ class AdminTest extends TestCase
     public function testAdminFieldEditInvalid()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->post(
                 'admin/field/1',
                 [
@@ -167,7 +167,7 @@ class AdminTest extends TestCase
     public function testAdminFieldEditValid()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->post(
                 'admin/field/1',
                 [
@@ -193,7 +193,7 @@ class AdminTest extends TestCase
     public function testAdminFieldConfirm()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get(
                 'admin/field/confirm/1'
             );
@@ -205,7 +205,7 @@ class AdminTest extends TestCase
     public function testAdminChangePassword()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->get('admin/change-password');
         $response->assertStatus(200);
 
@@ -214,7 +214,7 @@ class AdminTest extends TestCase
     public function testAdminChangePasswordInvalid()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->post(
                 'admin/change-password',
                 [
@@ -233,7 +233,7 @@ class AdminTest extends TestCase
     public function testAdminChangePasswordValid()
     {
         $response = $this
-            ->withSession(['admin' => $this->prepareField()])
+            ->withSession(['admin' => $this->prepareAdmin()])
             ->post(
                 'admin/change-password',
                 [
@@ -245,172 +245,5 @@ class AdminTest extends TestCase
             );
         $response->assertStatus(302);
         $response->assertRedirect('admin');
-    }
-
-    /* API Method */
-    public function testAdminAPILoginValid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/login',
-            'post',
-            [
-            'username' => 'admin',
-            'password' => '123456'
-            ]
-        );
-        $result = $controller->account_login($request);
-        $this->assertInstanceOf(Admin::class, $result);
-    }
-
-    public function testAdminAPILoginInvalid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/login',
-            'post',
-            [
-            'username' => 'admin',
-            ]
-        );
-        $result = $controller->account_login($request);
-        $this->assertFalse($result);
-    }
-
-    public function testAdminAPIEditInvalid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/edit',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->account_edit($request);
-        $this->assertFalse($result);
-    }
-
-    public function testAdminAPIEditValid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/edit',
-            'post',
-            [
-              'id' => 1,
-              'username' => 'admin',
-            ]
-        );
-        $result = $controller->account_edit($request);
-        $this->assertInstanceOf(Admin::class, $result);
-    }
-
-    public function testAdminAPIChangePasswordInvalid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/change-password',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->account_change_password($request);
-        $this->assertFalse($result);
-    }
-
-    public function testAdminAPIChangePasswordValid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/change-password',
-            'post',
-            [
-              'id' => 1,
-              'old_password' => '123456',
-              'new_password' => '123456',
-            ]
-        );
-        $result = $controller->account_change_password($request);
-        $this->assertTrue($result);
-    }
-
-    public function testAdminAPICustomerEditInvalid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/customer/1',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->customer_edit($request);
-        $this->assertFalse($result);
-    }
-
-    public function testAdminAPICustomerEditValid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/customer/1',
-            'post',
-            [
-              'id' => 1,
-              'name' => 'Lionel Messi',
-              'email' => 'messi@m.com',
-              'phone_number' => '0123456789',
-            ]
-        );
-        $result = $controller->customer_edit($request);
-        $this->assertInstanceOf(Customer::class, $result);
-    }
-
-    public function testAdminAPIFieldEditInvalid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/field/1',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->field_edit($request);
-        $this->assertFalse($result);
-    }
-
-    public function testAdminAPIFieldEditValid()
-    {
-        $controller = new AdminController();
-        $request = Request::create(
-            '/field/1',
-            'post',
-            [
-              'id' => 1,
-              'name' => 'Football A Field',
-              'description' => 'Indoor football field',
-              'address' => '100/20 Address to Field',
-              'email' => 'field_a@f.com',
-              'phone_number' => '0123456789'
-            ]
-        );
-        $result = $controller->field_edit($request);
-        $this->assertInstanceOf(Field::class, $result);
-    }
-
-    public function testAdminAPIFieldConfirmInvalid()
-    {
-        $controller = new AdminController();
-        $result = $controller->field_confirm(null);
-        $this->assertFalse($result);
-    }
-
-    public function testAdminAPIFieldConfirmValid()
-    {
-        $controller = new AdminController();
-        $result = $controller->field_confirm(1);
-        $this->assertInstanceOf(Field::class, $result);
     }
 }

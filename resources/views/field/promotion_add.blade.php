@@ -18,15 +18,15 @@
                 <tbody id="schedule-list">
                   <tr>
                     <td>Name</td>
-                    <td><input required type="text" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
+                    <td><input required type="text" pattern=".{4,30}" maxlength="30" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Price</td>
-                    <td><input required type="text" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
+                    <td><input required type="number" min="10" max="9999999999" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Description</td>
-                    <td><input required type="text" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
+                    <td><input required type="text" pattern=".{10,250}" maxlength="250" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
                   </tr>
                 </tbody>
               </table>
