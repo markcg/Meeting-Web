@@ -166,7 +166,7 @@ class AdminValidationTest extends TestCase
         $unique->name = 'field_unique';
         $unique->description = 'description';
         $unique->address = 'address';
-        $unique->email = 'a@a.com';
+        $unique->email = 'field@gmail.com';
         $unique->phone_number = '1234567890';
         $unique->username = 'username';
         $unique->password = '123456';
@@ -177,7 +177,7 @@ class AdminValidationTest extends TestCase
               'name' => 'field_unique',
               'description' => '1234567890',
               'address' => '12345678901234567890',
-              'email' => '1234567890',
+              'email' => 'field@gmail.com',
               'phone_number' => '1234567890'
             ]
         );
@@ -192,7 +192,7 @@ class AdminValidationTest extends TestCase
         $this->assertTrue(!empty($name));
         $this->assertTrue(empty($description));
         $this->assertTrue(empty($address));
-        $this->assertTrue(empty($email));
+        $this->assertTrue(is_string($email));
         $this->assertTrue(empty($phone_number));
         $this->assertInstanceOf(Validator::class, $result);
 
