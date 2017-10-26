@@ -112,11 +112,11 @@ class AdminValidationTest extends TestCase
     {
         $request = Request::create(
             '/test', 'post', [
-              'name' => '!@#$%',
-              'description' => '!@#$%',
-              'address' => '!@#$%',
-              'email' => '!@#$%',
-              'phone_number' => '!@#$%'
+              'name' => false,
+              'description' => false,
+              'address' => false,
+              'email' => false,
+              'phone_number' => false
             ]
         );
         $result = FieldValidator::validate_edit($request);
@@ -138,7 +138,7 @@ class AdminValidationTest extends TestCase
     {
         $request = Request::create(
             '/test', 'post', [
-              'name' => '123456789012345678901234567890_'
+              'name' => '123456789012345678901234567890_',
               'description' => '123456789012345678901234567890_',
               'address' => '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
               'email' => '123456789012345678901234567890_',
@@ -163,15 +163,20 @@ class AdminValidationTest extends TestCase
     public function testEditNotUnique()
     {
         $unique = new Field();
-        $unique->username = 'field_unique';
+        $unique->name = 'field_unique';
+        $unique->description = 'description';
+        $unique->address = 'address';
+        $unique->email = 'a@a.com';
+        $unique->phone_number = '1234567890';
+        $unique->username = 'username';
         $unique->password = '123456';
         $unique->save();
 
         $request = Request::create(
             '/test', 'post', [
-              'name' => 'field_unique'
+              'name' => 'field_unique',
               'description' => '1234567890',
-              'address' => '1234567890',
+              'address' => '12345678901234567890',
               'email' => '1234567890',
               'phone_number' => '1234567890'
             ]
@@ -185,10 +190,10 @@ class AdminValidationTest extends TestCase
         $phone_number = $result->errors()->first('phone_number');
 
         $this->assertTrue(!empty($name));
-        $this->assertTrue(!empty($description));
-        $this->assertTrue(!empty($address));
-        $this->assertTrue(!empty($email));
-        $this->assertTrue(!empty($phone_number));
+        $this->assertTrue(empty($description));
+        $this->assertTrue(empty($address));
+        $this->assertTrue(empty($email));
+        $this->assertTrue(empty($phone_number));
         $this->assertInstanceOf(Validator::class, $result);
 
         $unique->delete();
@@ -197,10 +202,10 @@ class AdminValidationTest extends TestCase
     {
         $request = Request::create(
             '/test', 'post', [
-              'name' => 'field_unique'
+              'name' => 'field_unique',
               'description' => '1234567890',
-              'address' => '1234567890',
-              'email' => '1234567890',
+              'address' => '1234567890_1234567890',
+              'email' => 'field@gmail.com',
               'phone_number' => '1234567890'
             ]
         );
@@ -219,7 +224,7 @@ class AdminValidationTest extends TestCase
         $this->assertTrue(empty($phone_number));
         $this->assertInstanceOf(Validator::class, $result);
 
-        $unique->delete();
+        // $unique->delete();
     }
 
     /* Change Password */
@@ -321,6 +326,108 @@ class AdminValidationTest extends TestCase
         $this->assertTrue(empty($old_password));
         $this->assertTrue(empty($new_password));
         $this->assertTrue(empty($re_password));
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+
+    /* Promotion */
+    public function testPromotionEmpty()
+    {
+        $request = Request::create(
+            '/test', 'post', [
+            'title' => '',
+            'price' => '',
+            'description' => '',
+            ]
+        );
+        $result = FieldValidator::validate_promotion_add($request);
+
+        $title = $result->errors()->first('title');
+        $price = $result->errors()->first('price');
+        $description = $result->errors()->first('description');
+
+        $this->assertTrue(!empty($title));
+        $this->assertTrue(!empty($price));
+        $this->assertTrue(!empty($description));
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+    public function testPromotionInvalidCharacter()
+    {
+        $request = Request::create(
+            '/test', 'post', [
+            'title' => '!@#$%',
+            'price' => '!@#$%',
+            'description' => '!@#$%',
+            ]
+        );
+        $result = FieldValidator::validate_promotion_add($request);
+
+        $title = $result->errors()->first('title');
+        $price = $result->errors()->first('price');
+        $description = $result->errors()->first('description');
+
+        $this->assertTrue(!empty($title));
+        $this->assertTrue(!empty($price));
+        $this->assertTrue(!empty($description));
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+    public function testPromotionTooLong()
+    {
+        $request = Request::create(
+            '/test', 'post', [
+            'title' => '123456789012345678901234567890_',
+            'price' => '99999999999',
+            'description' => '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890_123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890_12345678901234567890_',
+            ]
+        );
+        $result = FieldValidator::validate_promotion_add($request);
+
+        $title = $result->errors()->first('title');
+        $price = $result->errors()->first('price');
+        $description = $result->errors()->first('description');
+
+        $this->assertTrue(!empty($title));
+        $this->assertTrue(!empty($price));
+        $this->assertTrue(!empty($description));
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+    public function testPromotionTooShort()
+    {
+        $request = Request::create(
+            '/test', 'post', [
+            'title' => '',
+            'price' => '',
+            'description' => '',
+            ]
+        );
+        $result = FieldValidator::validate_promotion_add($request);
+
+        $title = $result->errors()->first('title');
+        $price = $result->errors()->first('price');
+        $description = $result->errors()->first('description');
+
+        $this->assertTrue(!empty($title));
+        $this->assertTrue(!empty($price));
+        $this->assertTrue(!empty($description));
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+    public function testPromotionValid()
+    {
+        $request = Request::create(
+            '/test', 'post', [
+            'title' => 'Promotion',
+            'price' => '1000',
+            'description' => 'Promotion Description',
+            ]
+        );
+        $result = FieldValidator::validate_promotion_add($request);
+
+        $title = $result->errors()->first('title');
+        $price = $result->errors()->first('price');
+        $description = $result->errors()->first('description');
+
+        $this->assertTrue(empty($title));
+        $this->assertTrue(empty($price));
+        $this->assertTrue(empty($description));
         $this->assertInstanceOf(Validator::class, $result);
     }
 }

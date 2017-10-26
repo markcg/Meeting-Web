@@ -106,7 +106,7 @@ class FieldValidator
             FieldValidator::change_password_message()
         );
     }
-    public static function validate_edit($request, $valid_old_name)
+    public static function validate_edit($request, $valid_old_name = false)
     {
         return Validator::make(
             $request->all(), [
@@ -119,7 +119,7 @@ class FieldValidator
             FieldValidator::edit_message()
         );
     }
-    public static function validate_detail_edit($request, $valid_old_name, $valid_old_username)
+    public static function validate_detail_edit($request, $valid_old_name = false, $valid_old_username = false)
     {
         return Validator::make(
             $request->all(), [
@@ -139,7 +139,7 @@ class FieldValidator
             $request->all(), [
             'title' => 'required|alpha_dash|min:4|max:30',
             'price' => 'required|numeric|min:10|max:9999999999',
-            'description' => 'required|alpha_dash|min:10|max:250',
+            'description' => 'required|string|min:10|max:250',
             ],
             FieldValidator::promotion_message()
         );

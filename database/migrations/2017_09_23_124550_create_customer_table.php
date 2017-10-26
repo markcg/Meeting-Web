@@ -21,8 +21,8 @@ class CreateCustomerTable extends Migration
                 $table->string('phone_number');
                 $table->string('username')->unique();
                 $table->string('password');
-                $table->string('latitude');
-                $table->string('longitude');
+                $table->string('latitude')->nullable();
+                $table->string('longitude')->nullable();
                 $table->timestamps();
             }
         );
