@@ -115,14 +115,17 @@ class AdminController extends Controller
     /* Post Method */
     public function handle_login(Request $request)
     {
-        $validator = AdminValidator::validate_login($request);
+        $username = $request->input('username');
+        $password = $request->input('password');
+
+        $validator = AdminValidator::validate_login($username, $password);
         if ($validator->fails()) {
             return redirect('/admin/login')
                     ->withErrors($validator)
                     ->withInput();
         }
 
-        $login = $this->account_login($request);
+        $login = $this->account_login($username, $password);
         if (!empty($login)) {
             session(['admin' => $login]);
             return redirect('/admin');
@@ -137,14 +140,18 @@ class AdminController extends Controller
     {
         $old = Admin::find($request->input('id'));
         $valid_old_name = $old->username == $request->input('username');
-        $validator = AdminValidator::validate_edit($request, $valid_old_name);
+
+        $id = $request->input('id');
+        $username = $request->input('username');
+
+        $validator = AdminValidator::validate_edit($username, $valid_old_name);
         if ($validator->fails()) {
             return redirect('/admin/edit')
                   ->withErrors($validator)
                   ->withInput();
         }
 
-        $model = $this->account_edit($request);
+        $model = $this->account_edit($id, $username);
         if (!empty($model)) {
             session(['admin' => $model]);
             return redirect('/admin/edit');
@@ -157,7 +164,12 @@ class AdminController extends Controller
 
     public function handle_change_password(Request $request)
     {
-        $validator = AdminValidator::validate_change_password($request);
+        $id = $request->input('id');
+        $old_password = $request->input('old_password');
+        $new_password = $request->input('new_password');
+        $re_password = $request->input('re_password');
+
+        $validator = AdminValidator::validate_change_password($old_password, $new_password, $re_password);
         if ($validator->fails()) {
             return redirect('/admin/change-password')
                 ->withErrors($validator)
@@ -170,7 +182,7 @@ class AdminController extends Controller
             ->withInput();;
         }
 
-        $model = $this->account_change_password($request);
+        $model = $this->account_change_password($id, $old_password, $new_password);
         if (!empty($model)) {
             return redirect('/admin');
         } else {
@@ -182,7 +194,13 @@ class AdminController extends Controller
     {
         $old = Customer::find($request->input('id'));
         $valid_old_name = $old->name == $request->input('name');
-        $validator = CustomerValidator::validate_edit($request, $valid_old_name);
+
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $phone_number = $request->input('phone_number');
+
+        $validator = CustomerValidator::validate_edit($name, $email, $phone_number, $valid_old_name);
 
         if ($validator->fails()) {
             return redirect('/admin/customer/' . $request->input('id'))
@@ -190,7 +208,7 @@ class AdminController extends Controller
                     ->withInput();
         }
 
-        if ($this->customer_edit($request)) {
+        if ($this->customer_edit($id, $name, $email, $phone_number)) {
             return redirect('/admin/customer/' . $request->input('id'));
         } else {
             return redirect('/admin/customer/' . $request->input('id'));
@@ -201,7 +219,14 @@ class AdminController extends Controller
     {
         $old = Field::find($request->input('id'));
         $valid_old_name = $old->name == $request->input('name');
-        $validator = FieldValidator::validate_edit($request, $valid_old_name);
+
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $description = $request->input('description');
+        $address = $request->input('address');
+        $email = $request->input('email');
+        $phone_number = $request->input('phone_number');
+        $validator = FieldValidator::validate_edit($name, $description, $address, $email, $phone_number, $valid_old_name);
 
         if ($validator->fails()) {
             return redirect('/admin/field/' . $request->input('id'))
@@ -209,7 +234,7 @@ class AdminController extends Controller
                   ->withInput();
         }
 
-        if ($this->field_edit($request)) {
+        if ($this->field_edit($id, $name, $description, $address, $email, $phone_number)) {
             return redirect('/admin/field/' . $request->input('id'));
         } else {
             return redirect('/admin/field/' . $request->input('id'));
@@ -218,11 +243,11 @@ class AdminController extends Controller
 
     /* API Method */
     /* --Account */
-    public function account_login(Request $request)
+    public function account_login($username, $password)
     {
         try {
-            $username = $request->input('username');
-            $password = $request->input('password');
+            $username = $username;
+            $password = $password;
             $account = Admin::where(
                 [
                 ['username', '=', $username],
@@ -235,14 +260,14 @@ class AdminController extends Controller
         }
     }
 
-    public function account_edit(Request $request)
+    public function account_edit($id, $username)
     {
         try {
-            $account = Admin::find($request->input('id'));
+            $account = Admin::find($id);
             if(is_null($account)) {
                 return false;
             } else {
-                $account->username = $request->input('username');
+                $account->username = $username;
                 $account->save();
                 return $account;
             }
@@ -251,12 +276,12 @@ class AdminController extends Controller
         }
     }
 
-    public function account_change_password(Request $request)
+    public function account_change_password($id, $old_password, $new_password)
     {
         try {
-            $user = Admin::find($request->input('id'));
-            $oldPassword = $request->input('old_password');
-            $newPassword = $request->input('new_password');
+            $user = Admin::find($id);
+            $oldPassword = $old_password;
+            $newPassword = $new_password;
             if($user->password === $oldPassword) {
                 $user->password = $newPassword;
                 $user->save();
@@ -269,16 +294,16 @@ class AdminController extends Controller
         }
     }
 
-    public function customer_edit(Request $request)
+    public function customer_edit($id, $name, $email, $phone_number)
     {
         try {
-            $model = Customer::find($request->input('id'));
+            $model = Customer::find($id);
             if(is_null($model)) {
                 return false;
             } else {
-                $model->name = $request->input('name');
-                $model->email = $request->input('email');
-                $model->phone_number = $request->input('phone_number');
+                $model->name = $name;
+                $model->email = $email;
+                $model->phone_number = $phone_number;
                 $model->save();
                 return $model;
             }
@@ -287,18 +312,18 @@ class AdminController extends Controller
         }
     }
 
-    public function field_edit(Request $request)
+    public function field_edit($id, $name, $description, $address, $email, $phone_number)
     {
         try {
-            $model = Field::find($request->input('id'));
+            $model = Field::find($id);
             if(is_null($model)) {
                 return false;
             } else {
-                $model->name = $request->input('name');
-                $model->description = $request->input('description');
-                $model->email = $request->input('email');
-                $model->address = $request->input('address');
-                $model->phone_number = $request->input('phone_number');
+                $model->name = $name;
+                $model->description = $description;
+                $model->email = $email;
+                $model->address = $address;
+                $model->phone_number = $phone_number;
                 $model->save();
                 return $model;
             }

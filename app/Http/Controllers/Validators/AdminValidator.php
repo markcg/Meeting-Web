@@ -36,10 +36,13 @@ class AdminValidator
         ];
     }
 
-    public static function validate_login($request)
+    public static function validate_login($username, $password)
     {
         return Validator::make(
-            $request->all(), [
+            [
+              'username' => $username,
+              'password' => $password
+            ], [
             'username' => 'required|alpha_dash|max:10',
             'password' => 'required',
             ],
@@ -47,20 +50,26 @@ class AdminValidator
         );
     }
 
-    public static function validate_edit($request, $valid_old_username = false)
+    public static function validate_edit($username, $valid_old_username = false)
     {
         return Validator::make(
-            $request->all(), [
-            'username' => $valid_old_username ? 'required' : 'required|unique:admin,username|alpha_dash|max:10',
+            [
+              'username' => $username
+            ], [
+              'username' => $valid_old_username ? 'required' : 'required|unique:admin,username|alpha_dash|max:10',
             ],
             AdminValidator::edit_message()
         );
     }
 
-    public static function validate_change_password($request)
+    public static function validate_change_password($old_password, $new_password, $re_password)
     {
         return Validator::make(
-            $request->all(), [
+            [
+              'old_password' => $old_password,
+              'new_password' => $new_password,
+              're_password' => $re_password
+            ], [
             'old_password' => 'required|alpha_dash|min:4|max:10',
             'new_password' => 'required|alpha_dash|min:4|max:10',
             're_password' => 'required|alpha_dash|min:4|max:10',

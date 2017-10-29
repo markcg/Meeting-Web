@@ -14,11 +14,9 @@ class CustomerController extends Controller
     }
 
     /* --Account */
-    public function account_login(Request $request)
+    public function account_login($username, $password)
     {
         try {
-            $username = $request->input('username');
-            $password = $request->input('password');
             $account = Customer::where(
                 [
                 ['username', '=', $username],
@@ -32,17 +30,17 @@ class CustomerController extends Controller
     }
 
 
-    public function account_register(Request $request)
+    public function account_register($name, $email, $phone_number, $username, $password, $latitude, $longitude)
     {
         try {
             $account = new Customer();
-            $account->name = $request->input('name');
-            $account->email = $request->input('email');
-            $account->phone_number = $request->input('phone_number');
-            $account->username = $request->input('username');
-            $account->password = $request->input('password');
-            $account->latitude = $request->input('latitude');
-            $account->longitude = $request->input('longitude');
+            $account->name = $name;
+            $account->email = $email;
+            $account->phone_number = $phone_number;
+            $account->username = $username;
+            $account->password = $password;
+            $account->latitude = $latitude;
+            $account->longitude = $longitude;
             $account->save();
             return $account;
         } catch (\Exception $e) {
@@ -50,28 +48,28 @@ class CustomerController extends Controller
         }
     }
 
-    public function account_edit(Request $request)
+    public function account_edit($id, $name, $email, $phone_number, $username, $password, $latitude, $longitude)
     {
         try {
-            $account = Customer::find($request->input('id'));
+            $account = Customer::find($id);
             if(is_null($account)) {
                 return false;
             } else {
-                $account->name = $request->input('name');
-                $account->email = $request->input('email');
-                $account->phone_number = $request->input('phone_number');
-                $account->username = $request->input('username');
-                $account->password = $request->input('password');
-                if(!is_null($request->input('latitude'))
-                    && !empty($request->input('latitude'))
+                $account->name = $name;
+                $account->email = $email;
+                $account->phone_number = $phone_number;
+                $account->username = $username;
+                $account->password = $password;
+                if(!is_null($latitude)
+                    && !empty($latitude)
                 ) {
-                    $account->latitude = $request->input('latitude');
+                    $account->latitude = $latitude;
                 }
 
-                if(!is_null($request->input('longitude'))
-                    && !empty($request->input('longitude'))
+                if(!is_null($longitude)
+                    && !empty($longitude)
                 ) {
-                    $account->latitude = $request->input('longitude');
+                    $account->latitude = $longitude;
                 }
                 $account->save();
                 return $account;
@@ -81,12 +79,12 @@ class CustomerController extends Controller
         }
     }
 
-    public function account_change_password(Request $request)
+    public function account_change_password($id, $old_password, $new_password)
     {
         try {
-            $user = Customer::find($request->input('customer_id'));
-            $oldPassword = $request->input('old_password');
-            $newPassword = $request->input('new_password');
+            $user = Customer::find($id);
+            $oldPassword = $old_password;
+            $newPassword = $new_password;
             if($user->password === $oldPassword) {
                 $user->password = $newPassword;
                 $user->save();
@@ -99,21 +97,27 @@ class CustomerController extends Controller
         }
     }
 
-    public function account_forget(Request $request)
+    public function account_forget($username, $email, $no_mail = false)
     {
         try {
-            $account = Customer::where('username', '=', $request->input('username'))->first();
+            $account = Customer::where('username', '=', $username)->first();
             if(is_null($account)) {
                 return false;
-            } else {
-                $tempPassword = str_random(10);
-                $message = 'Your new password is ' . $tempPassword;
-                Mail::raw(
-                    $message, $account, function ($message) {
-                        $message->from('fieldfinder.mailserver@gmail.com', 'Field Finder Forget Password');
-                        $message->to($account->email);
-                    }
-                );
+            } else if($account->email !== $email) {
+                return false;
+            }else {
+                if(!$no_mail) {
+                    $tempPassword = str_random(10);
+                    $message = 'Your new password is ' . $tempPassword;
+                    $account->password = $tempPassword;
+                    Mail::raw(
+                        $message, $account, function ($message) {
+                            $message->from('fieldfinder.mailserver@gmail.com', 'Customer Finder Forget Password');
+                            $message->to($email);
+                        }
+                    );
+                }
+                return true;
             }
         } catch (\Exception $e) {
             return false;
@@ -121,12 +125,12 @@ class CustomerController extends Controller
     }
 
     /* Friend */
-    public function friend_add(Request $request)
+    public function friend_add($friend_id, $customer_id)
     {
         try {
             $friend = new Friend();
-            $friend->friend_id = $request->input('friend_id');
-            $friend->customer_id = $request->input('customer_id');
+            $friend->friend_id = $friend_id;
+            $friend->customer_id = $customer_id;
             $friend->save();
             return true;
         } catch (\Exception $e) {
@@ -134,10 +138,10 @@ class CustomerController extends Controller
         }
     }
 
-    public function friend_accept(Request $request)
+    public function friend_accept($id)
     {
         try {
-            $friend = Friend::find($request->input('id'));
+            $friend = Friend::find($id);
             $friend->confirm = 1;
             $friend->save();
             return true;
@@ -146,10 +150,10 @@ class CustomerController extends Controller
         }
     }
 
-    public function friend_reject(Request $request)
+    public function friend_reject($id)
     {
         try {
-            $friend = Friend::find($request->input('id'));
+            $friend = Friend::find($id);
             $friend->confirm = 2;
             $friend->save();
             return true;
@@ -158,10 +162,10 @@ class CustomerController extends Controller
         }
     }
 
-    public function friend_delete(Request $request)
+    public function friend_delete($id)
     {
         try {
-            $friend = Friend::find($request->input('id'));
+            $friend = Friend::find($id);
             $friend->delete();
             return true;
         } catch (\Exception $e) {
@@ -170,61 +174,60 @@ class CustomerController extends Controller
     }
 
     /* Mobile */
-    public function search(Request $request)
+    public function search($keyword)
     {
         try {
-            $keyword = $request->input('keyword');
-            $result = Customer::where('name', 'like', "%$username%")->get();
+            $result = Customer::where('name', 'like', "%$keyword%")->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
         }
     }
 
-    public function meetings(Request $request)
+    public function meetings($id)
     {
         try {
-            $id = $request->input('id');
+
             $result = Customer::find($id)->meetings();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
         }
     }
-    public function teams(Request $request)
+    public function teams($id)
     {
         try {
-            $id = $request->input('id');
+
             $result = Customer::find($id)->teams();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
         }
     }
-    public function friends(Request $request)
+    public function friends($id)
     {
         try {
-            $id = $request->input('id');
+
             $result = Customer::find($id)->friends();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
         }
     }
-    public function requests(Request $request)
+    public function requests($id)
     {
         try {
-            $id = $request->input('id');
+
             $result = Customer::find($id)->requests();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
         }
     }
-    public function reserves(Request $request)
+    public function reserves($id)
     {
         try {
-            $id = $request->input('id');
+
             $result = Customer::find($id)->reserves();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {

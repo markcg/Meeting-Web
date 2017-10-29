@@ -17,73 +17,107 @@ class CustomerApiController extends Controller
     /* --Account */
     public function account_login(Request $request)
     {
-        return json_encode($this->controller->account_login($request));
+        $username = $request->input('username');
+        $password = $request->input('password');
+        return json_encode($this->controller->account_login($username, $password));
     }
 
     public function account_register(Request $request)
     {
-        return json_encode($this->controller->account_register($request));
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $phone_number = $request->input('phone_number');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        return json_encode($this->controller->account_register($name, $email, $phone_number, $username, $password, $latitude, $longitude));
     }
 
     public function account_edit(Request $request)
     {
-        return json_encode($this->controller->account_edit($request));
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $phone_number = $request->input('phone_number');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        return json_encode($this->controller->account_edit($id, $name, $email, $phone_number, $username, $password, $latitude, $longitude));
     }
 
     public function account_change_password(Request $request)
     {
-        return json_encode($this->controller->account_change_password($request));
+        $id = $request->input('id');
+        $old_password = $request->input('old_password');
+        $new_password = $request->input('new_password');
+        $re_password = $request->input('re_password');
+        return json_encode($this->controller->account_change_password($id, $old_password, $new_password));
     }
 
     public function account_forget(Request $request)
     {
-        return json_encode($this->controller->account_forget($request));
+        $username = $request->input('username');
+        $email = $request->input('email');
+        return json_encode($this->controller->account_forget($username, $email));
     }
 
     /* Friend */
     public function friend_add(Request $request)
     {
-        return json_encode($this->controller->friend_add($request));
+        $friend_id = $request->input('friend_id');
+        $customer_id = $request->input('customer_id');
+        return json_encode($this->controller->friend_add($friend_id, $customer_id));
     }
 
     public function friend_accept(Request $request)
     {
-        return json_encode($this->controller->friend_accept($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->friend_accept($id));
     }
 
     public function friend_reject(Request $request)
     {
-        return json_encode($this->controller->friend_reject($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->friend_reject($id));
     }
 
     public function friend_delete(Request $request)
     {
-        return json_encode($this->controller->friend_delete($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->friend_delete($id));
     }
 
     /* Mobile */
     public function search(Request $request)
     {
-        return json_encode($this->controller->search($request));
+        $keyword = $request->input('keyword');
+        return json_encode($this->controller->search($keyword));
     }
     public function meetings(Request $request)
     {
-        return json_encode($this->controller->meetings($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->meetings($id));
     }
     public function teams(Request $request)
     {
-        return json_encode($this->controller->teams($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->teams($id));
     }
     public function friends(Request $request)
     {
-        return json_encode($this->controller->friends($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->friends($id));
     }
     public function requests(Request $request)
     {
-        return json_encode($this->controller->requests($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->requests($id));
     }
     public function reserves(Request $request)
     {
-        return json_encode($this->controller->reserves($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->reserves($id));
     }
 }

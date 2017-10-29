@@ -15,40 +15,55 @@ class MeetingApiController extends Controller
     }
     public function create(Request $request)
     {
-        return json_encode($this->controller->create($request));
+        $customer_id = $request->input('customer_id');
+        $name = $request->input('name');
+        $date = $request->input('date');
+        $start = $request->input('start');
+        $end = $request->input('end');
+        $detail = $request->input('detail');
+        return json_encode($this->controller->create($customer_id, $name, $date, $start, $end, $detail));
     }
 
     public function delete(Request $request)
     {
-        return json_encode($this->controller->delete($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->delete($id));
     }
 
     public function add_team(Request $request)
     {
-        return json_encode($this->controller->add_member($request));
+        $team_id = $request->input('team_id');
+        $meeting_id = $request->input('meeting_id');
+        return json_encode($this->controller->add_member($team_id, $meeting_id));
     }
 
     public function delete_team(Request $request)
     {
-        return json_encode($this->controller->delete_member($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->delete_member($id));
     }
     public function search(Request $request)
     {
-        return json_encode($this->controller->search($request));
+        $id = $request->input('id');
+        $keyword = $request->input('keyword');
+        return json_encode($this->controller->search($id, $keyword));
     }
 
     public function get(Request $request)
     {
-        return json_encode($this->controller->get($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->get($id));
     }
 
     public function schedules(Request $request)
     {
-        return json_encode($this->controller->schedules($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->schedules($id));
     }
 
     public function teams(Request $request)
     {
-        return json_encode($this->controller->teams($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->teams($id));
     }
 }

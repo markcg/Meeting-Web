@@ -29,43 +29,25 @@ class AdminAPITest extends TestCase
     public function testAdminAPILoginValid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/login',
-            'post',
-            [
-            'username' => 'admin',
-            'password' => '123456'
-            ]
-        );
-        $result = $controller->account_login($request);
+        $username = 'admin';
+        $password = '123456';
+        $result = $controller->account_login($username, $password);
         $this->assertInstanceOf(Admin::class, $result);
     }
 
     public function testAdminAPILoginInvalid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/login',
-            'post',
-            [
-            'username' => 'admin',
-            ]
-        );
-        $result = $controller->account_login($request);
+        $username = 'admin';
+        $result = $controller->account_login($username, null);
         $this->assertFalse($result);
     }
 
     public function testAdminAPIEditInvalid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/edit',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->account_edit($request);
+        $id = 1;
+        $result = $controller->account_edit($id, null);
         $this->assertFalse($result);
     }
 
@@ -80,101 +62,77 @@ class AdminAPITest extends TestCase
               'username' => 'admin',
             ]
         );
-        $result = $controller->account_edit($request);
+        $id = 1;
+        $username = 'admin';
+        $result = $controller->account_edit($id, $username);
         $this->assertInstanceOf(Admin::class, $result);
     }
 
     public function testAdminAPIChangePasswordInvalid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/change-password',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->account_change_password($request);
+        $id = null;
+        $old_password = '123456';
+        $new_password = '1234567';
+        $result = $controller->account_change_password($id, $old_password, $new_password);
         $this->assertFalse($result);
     }
 
     public function testAdminAPIChangePasswordValid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/change-password',
-            'post',
-            [
-              'id' => 1,
-              'old_password' => '123456',
-              'new_password' => '123456',
-            ]
-        );
-        $result = $controller->account_change_password($request);
+        $id = 1;
+        $old_password = '123456';
+        $new_password = '1234567';
+        $result = $controller->account_change_password($id, $old_password, $new_password);
         $this->assertTrue($result);
     }
 
     public function testAdminAPICustomerEditInvalid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/customer/1',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->customer_edit($request);
+        $id = null;
+        $name = 'Lionel Messi';
+        $email = 'messi@m.com';
+        $phone_number = '0123456789';
+        $result = $controller->customer_edit($id, $name, $email, $phone_number);
         $this->assertFalse($result);
     }
 
     public function testAdminAPICustomerEditValid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/customer/1',
-            'post',
-            [
-              'id' => 1,
-              'name' => 'Lionel Messi',
-              'email' => 'messi@m.com',
-              'phone_number' => '0123456789',
-            ]
-        );
-        $result = $controller->customer_edit($request);
+        $id = 1;
+        $name = 'Lionel Messi';
+        $email = 'messi@m.com';
+        $phone_number = '0123456789';
+        $result = $controller->customer_edit($id, $name, $email, $phone_number);
         $this->assertInstanceOf(Customer::class, $result);
     }
 
     public function testAdminAPIFieldEditInvalid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/field/1',
-            'post',
-            [
-            'id' => '1',
-            ]
-        );
-        $result = $controller->field_edit($request);
+        $id = null;
+        $name = 'Football A Field';
+        $description = 'Indoor football field';
+        $address = '100/20 Address to Field';
+        $email = 'field_a@f.com';
+        $phone_number = '0123456789';
+        $result = $controller->field_edit($id, $name, $description, $address, $email, $phone_number);
         $this->assertFalse($result);
     }
 
     public function testAdminAPIFieldEditValid()
     {
         $controller = new AdminController();
-        $request = Request::create(
-            '/field/1',
-            'post',
-            [
-              'id' => 1,
-              'name' => 'Football A Field',
-              'description' => 'Indoor football field',
-              'address' => '100/20 Address to Field',
-              'email' => 'field_a@f.com',
-              'phone_number' => '0123456789'
-            ]
-        );
-        $result = $controller->field_edit($request);
+        $id = 1;
+        $name = 'Football A Field';
+        $description = 'Indoor football field';
+        $address = '100/20 Address to Field';
+        $email = 'field_a@f.com';
+        $phone_number = '0123456789';
+        $result = $controller->field_edit($id, $name, $description, $address, $email, $phone_number);
         $this->assertInstanceOf(Field::class, $result);
     }
 

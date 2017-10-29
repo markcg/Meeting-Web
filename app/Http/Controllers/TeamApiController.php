@@ -16,41 +16,52 @@ class TeamApiController extends Controller
 
     public function create(Request $request)
     {
-        return json_encode($this->controller->create($request));
+        $customer_id = $request->input('id');
+        $name = $request->input('name');
+        $description = $request->input('description');
+        return json_encode($this->controller->create($customer_id, $name, $description));
     }
 
     public function delete(Request $request)
     {
-        return json_encode($this->controller->delete($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->delete($id));
     }
 
     public function add_member(Request $request)
     {
-        return json_encode($this->controller->add_member($request));
+        $team_id = $request->input('team_id');
+        $customer_id = $request->input('customer_id');
+        return json_encode($this->controller->add_member($team_id, $customer_id));
     }
 
     public function delete_member(Request $request)
     {
-        return json_encode($this->controller->delete_member($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->delete_member($id));
     }
 
     public function search(Request $request)
     {
-        return json_encode($this->controller->search($request));
+        $keyword = $request->input('keyword');
+        return json_encode($this->controller->search($keyword));
     }
 
     public function get(Request $request)
     {
-        return json_encode($this->controller->get($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->get($id));
     }
 
     public function members(Request $request)
     {
-        return json_encode($this->controller->members($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->members($id));
     }
 
     public function meetings(Request $request)
     {
-        return json_encode($this->controller->meetings($request));
+        $id = $request->input('id');
+        return json_encode($this->controller->meetings($id));
     }
 }

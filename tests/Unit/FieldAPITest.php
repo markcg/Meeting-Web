@@ -43,14 +43,9 @@ class FieldAPITest extends TestCase
         $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/login',
-            'post',
-            [
-            'username' => 'field_login_valid',
-            ]
-        );
-        $result = $controller->account_login($request);
+        $username = 'field_login_invalid';
+        $password = '123456';
+        $result = $controller->account_login($username, $password);
         $this->assertFalse($result);
         Field::where('username', '=', 'field_login_valid')->delete();
     }
@@ -70,15 +65,9 @@ class FieldAPITest extends TestCase
         $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/login',
-            'post',
-            [
-            'username' => 'field_login_valid',
-            'password' => '123456',
-            ]
-        );
-        $result = $controller->account_login($request);
+        $username = 'field_login_valid';
+        $password = '123456';
+        $result = $controller->account_login($username, $password);
         $this->assertInstanceOf(Field::class, $result);
         Field::where('username', '=', 'field_login_valid')->delete();
     }
@@ -87,44 +76,33 @@ class FieldAPITest extends TestCase
     public function testFieldAPIRegisterInvalid()
     {
         $controller = new FieldController();
-        $request = Request::create(
-            '/register',
-            'post',
-            [
-            'description' => '',
-            'email' => '',
-            'address' => '',
-            'phone_number' => '',
-            'username' => '',
-            'password' => '',
-            'password' => '',
-            'latitude' => '',
-            'longitude' => '',
-            ]
-        );
-        $result = $controller->account_register($request);
+        $description = '';
+        $email= '';
+        $address = '';
+        $phone_number = '';
+        $username = '';
+        $password = '';
+        $latitude = '';
+        $longitude = '';
+
+        $result = $controller->account_register(null, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude);
         $this->assertFalse($result);
     }
 
     public function testFieldAPIRegisterValid()
     {
         $controller = new FieldController();
-        $request = Request::create(
-            '/register',
-            'post',
-            [
-            'name' => 'field_register_valid',
-            'description' => 'field_register_valid',
-            'email' => 'field@register.com',
-            'address' => '100 Address',
-            'phone_number' => '0123456789',
-            'username' => 'field',
-            'password' => '123456',
-            'latitude' => '0.1',
-            'longitude' => '0.1',
-            ]
-        );
-        $result = $controller->account_register($request);
+        $name = 'field_register_valid';
+        $description = 'field_register_valid';
+        $email = 'field@register.com';
+        $address = '100 Address';
+        $phone_number = '0123456789';
+        $username = 'field';
+        $password = '123456';
+        $latitude = '0.1';
+        $longitude = '0.1';
+
+        $result = $controller->account_register($name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude);
         $this->assertInstanceOf(Field::class, $result);
         $this->assertDatabaseHas(
             'field', [
@@ -138,23 +116,16 @@ class FieldAPITest extends TestCase
     public function testFieldAPIEditInvalid()
     {
         $controller = new FieldController();
-        $request = Request::create(
-            '/edit',
-            'post',
-            [
-              'id' => '9999',
-              'name' => 'field_edit_valid',
-              'description' => 'field_edit_valid',
-              'email' => 'field@register.com',
-              'address' => '100 Address',
-              'phone_number' => '0123456789',
-              'username' => 'field',
-              'password' => '123456',
-              'latitude' => '0.1',
-              'longitude' => '0.1',
-            ]
-        );
-        $result = $controller->account_edit($request);
+        $name = 'field_edit_valid';
+        $description = 'field_edit_valid';
+        $email = 'field@register.com';
+        $address = '100 Address';
+        $phone_number = '0123456789';
+        $username = 'field';
+        $password = '123456';
+        $latitude = '0.1';
+        $longitude = '0.1';
+        $result = $controller->account_edit($name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude);
         $this->assertFalse($result);
     }
 
@@ -173,23 +144,17 @@ class FieldAPITest extends TestCase
         $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/edit',
-            'post',
-            [
-            'id' => $model->id,
-            'name' => 'field_edit_valid',
-            'description' => 'field_edit_valid',
-            'email' => 'field@register.com',
-            'address' => '100 Address',
-            'phone_number' => '0123456789',
-            'username' => 'field',
-            'password' => '123456',
-            'latitude' => '0.1',
-            'longitude' => '0.1',
-            ]
-        );
-        $result = $controller->account_edit($request);
+        $id = $model->id;
+        $name = 'field_edit_valid';
+        $description = 'field_edit_valid';
+        $email = 'field@register.com';
+        $address = '100 Address';
+        $phone_number = '0123456789';
+        $username = 'field';
+        $password = '123456';
+        $latitude = '0.1';
+        $longitude = '0.1';
+        $result = $controller->account_edit($id, $name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude);
         $this->assertInstanceOf(Field::class, $result);
         Field::where('name', '=', 'field_edit_valid')->delete();
     }
@@ -198,16 +163,10 @@ class FieldAPITest extends TestCase
     public function testFieldAPIChangePasswordInvalid()
     {
         $controller = new FieldController();
-        $request = Request::create(
-            '/change-password',
-            'post',
-            [
-              'id' => '9999',
-              'old_password' => '123456',
-              'new_password' => '1234567',
-            ]
-        );
-        $result = $controller->account_change_password($request);
+
+        $old_password = '123456';
+        $new_password = '1234567';
+        $result = $controller->account_change_password(null, $old_password, $new_password);
         $this->assertFalse($result);
     }
 
@@ -226,16 +185,10 @@ class FieldAPITest extends TestCase
         $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/change-password',
-            'post',
-            [
-            'id' => $model->id,
-            'old_password' => '123456',
-            'new_password' => '1234567',
-            ]
-        );
-        $result = $controller->account_change_password($request);
+        $id = $model->id;
+        $old_password = '123456';
+        $new_password = '1234567';
+        $result = $controller->account_change_password($id, $old_password, $new_password);
         $this->assertTrue($result);
         Field::where('name', '=', 'field_api_change_valid')->delete();
     }
@@ -249,15 +202,9 @@ class FieldAPITest extends TestCase
         // $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/forgot-password',
-            'post',
-            [
-              'username' => 'field_api_forgot_invalid',
-              'email' => 'a@a.com',
-            ]
-        );
-        $result = $controller->account_forget($request);
+        $username = 'field_api_forgot_invalid';
+        $email = 'a@a.com';
+        $result = $controller->account_forget($username, $email);
         $this->assertFalse($result);
     }
 
@@ -276,15 +223,9 @@ class FieldAPITest extends TestCase
         $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/forgot-password',
-            'post',
-            [
-              'username' => 'field_api_email_invalid',
-              'email' => 'a@b.com',
-            ]
-        );
-        $result = $controller->account_forget($request);
+        $username = 'field_api_forgot_invalid';
+        $email = 'a@b.com';
+        $result = $controller->account_forget($username, $email);
         $this->assertFalse($result);
         Field::where('name', '=', 'field_api_email_invalid')->delete();
     }
@@ -305,15 +246,9 @@ class FieldAPITest extends TestCase
         // $model->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/forgot-password',
-            'post',
-            [
-            'username' => 'field_a',
-            'email' => 'field_a@f.com',
-            ]
-        );
-        $result = $controller->account_forget($request, true);
+        $username = 'field_a';
+        $email = 'field_a@f.com';
+        $result = $controller->account_forget($username, $email, true);
         $this->assertTrue($result);
         // Field::where('name', '=', 'fieldApiForgetValid')->delete();
     }
@@ -332,7 +267,12 @@ class FieldAPITest extends TestCase
             'description' => 'testFieldAPIAddPromotionValid'
             ]
         );
-        $result = $controller->promotion_add($request);
+        $field_id = '1';
+        $title = 'testFieldAPIAddPromotionValid';
+        $price = '0';
+        $description = 'testFieldAPIAddPromotionValid';
+
+        $result = $controller->promotion_add($field_id, $title, $price, $description);
         $this->assertTrue($result);
         $this->assertDatabaseHas(
             'promotion', [
@@ -352,7 +292,11 @@ class FieldAPITest extends TestCase
             'title' => 'API Add'
             ]
         );
-        $result = $controller->promotion_add($request);
+        $title = 'API Add';
+        $price = '0';
+        $description = 'testFieldAPIAddPromotionValid';
+
+        $result = $controller->promotion_add(null, $title, $price, $description);
         $this->assertFalse($result);
     }
     /* -- Promotion Edit */
@@ -366,16 +310,12 @@ class FieldAPITest extends TestCase
         $promotion->save();
 
         $controller = new FieldController();
-        $request = Request::create(
-            '/promotions/edit',
-            'post',
-            [
-            'title' => 'testFieldAPIEditPromotionValidChange',
-            'price' => '0',
-            'description' => 'testFieldAPIEditPromotionValid'
-            ]
-        );
-        $result = $controller->promotion_edit($promotion->id, $request);
+
+        $title = 'testFieldAPIEditPromotionValidChange';
+        $price = '0';
+        $description = 'testFieldAPIEditPromotionValid';
+
+        $result = $controller->promotion_edit($promotion->id, $title, $price, $description);
         $this->assertTrue($result);
         $this->assertDatabaseHas(
             'promotion', [
@@ -388,14 +328,11 @@ class FieldAPITest extends TestCase
     public function testFieldAPIEditPromotionInvalid()
     {
         $controller = new FieldController();
-        $request = Request::create(
-            '/promotions/edit',
-            'post',
-            [
-            'title' => 'testFieldAPIEditPromotionValid',
-            ]
-        );
-        $result = $controller->promotion_edit(null, $request);
+        $title = 'testFieldAPIEditPromotionValidChange';
+        $price = '0';
+        $description = 'testFieldAPIEditPromotionValid';
+
+        $result = $controller->promotion_edit(null, $title, $price, $description);
         $this->assertFalse($result);
     }
 
@@ -464,28 +401,18 @@ class FieldAPITest extends TestCase
     /* -- Search */
     public function testFieldAPISearchValid()
     {
-        $request = Request::create(
-            '/search',
-            'post',
-            [
-            'keyword' => 'field_a',
-            ]
-        );
         $controller = new FieldController();
-        $result = $controller->search($request);
+        $keyword = 'Football A Field';
+        $result = $controller->search($keyword);
         $this->assertInstanceOf(Collection::class, $result);
+        $this->assertFalse(empty($result->toArray()));
     }
     public function testFieldAPISearchInvalid()
     {
-        $request = Request::create(
-            '/search',
-            'post',
-            [
-            'keyword' => '',
-            ]
-        );
         $controller = new FieldController();
-        $result = $controller->search($request);
+        $keyword = 'ABCD';
+        $result = $controller->search($keyword);
         $this->assertInstanceOf(Collection::class, $result);
+        $this->assertTrue(empty($result->toArray()));
     }
 }

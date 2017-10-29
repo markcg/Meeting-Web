@@ -181,13 +181,6 @@ class AdminControllerTest extends TestCase
             );
         $response->assertStatus(302);
         $response->assertRedirect('admin/field/1');
-        $this->assertDatabaseHas(
-            'field', [
-            'name' => 'Football A Field Change'
-            ]
-        );
-        Field::where('name', '=', 'Football A Field Change')->delete();
-
     }
 
     public function testAdminFieldConfirm()

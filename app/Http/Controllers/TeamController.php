@@ -12,10 +12,12 @@ use App\Models\Meeting;
 
 class TeamController extends Controller
 {
-    public function get(Request $request)
+    public function __construct()
+    {
+    }
+    public function get($id)
     {
         try {
-            $id = $request->input('id');
             $result = Team::find($id);
             return is_null($result) ? false : $result;
         } catch (\Exception $e) {
@@ -23,13 +25,13 @@ class TeamController extends Controller
         }
     }
 
-    public function create(Request $request)
+    public function create($customer_id, $name, $description)
     {
         try {
             $model = new Team();
-            $model->customer_id = $request->input(' ');
-            $model->name = $request->input('name');
-            $model->description = $request->input('description');
+            $model->customer_id = $customer_id;
+            $model->name = $name;
+            $model->description = $description;
             $model->save();
             return $model;
         } catch (\Exception $e) {
@@ -37,24 +39,26 @@ class TeamController extends Controller
         }
     }
 
-    public function delete(Request $request)
+    public function delete($id)
     {
         try {
-            $id = $request->input('id');
             $result = Team::find($id);
-            $result->delete();
-            return true;
+            if(!is_null($result)) {
+                $result->delete();
+                return true;
+            }
+            return false;
         } catch (\Exception $e) {
             return false;
         }
     }
 
-    public function add_member(Request $request)
+    public function add_member($team_id, $customer_id)
     {
         try {
             $model = new TeamMember();
-            $model->team_id = $request->input('team_id');
-            $model->customer_id = $request->input('customer_id');
+            $model->team_id = $team_id;
+            $model->customer_id = $customer_id;
             $model->save();
             return true;
         } catch (\Exception $e) {
@@ -62,33 +66,33 @@ class TeamController extends Controller
         }
     }
 
-    public function delete_member(Request $request)
+    public function delete_member($id)
     {
         try {
-            $id = $request->input('id');
             $result = TeamMember::find($id);
-            $result->delete();
-            return true;
+            if(!is_null($result)) {
+                $result->delete();
+                return true;
+            }
+            return false;
         } catch (\Exception $e) {
             return false;
         }
     }
 
-    public function search(Request $request)
+    public function search($keyword)
     {
         try {
-            $keyword = $request->input('keyword');
-            $result = Team::where('name', 'like', "%$username%")->get();
+            $result = Team::where('name', 'like', "%$keyword%")->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
         }
     }
 
-    public function members(Request $request)
+    public function members($id)
     {
         try {
-            $id = $request->input('id');
             $result = Team::find($id)->members;
             if(is_null($result)) { return false;
             } else {
@@ -106,10 +110,9 @@ class TeamController extends Controller
         }
     }
 
-    public function meetings(Request $request)
+    public function meetings($id)
     {
         try {
-            $id = $request->input('id');
             $result = Team::find($id)->meetings;
             if(is_null($result)) { return false;
             } else {

@@ -126,14 +126,17 @@ class FieldController extends Controller
     /* Post Method */
     public function handle_login(Request $request)
     {
-        $validator = FieldValidator::validate_login($request);
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $validator = FieldValidator::validate_login($username, $password);
+
         if ($validator->fails()) {
             return redirect('/field/login')
                       ->withErrors($validator)
                       ->withInput();
         }
 
-        $login = $this->account_login($request);
+        $login = $this->account_login($username, $password);
         if (!empty($login)) {
             if($login->confirm == 1) {
                 session(['field' => $login]);
@@ -152,7 +155,12 @@ class FieldController extends Controller
 
     public function handle_change_password(Request $request)
     {
-        $validator = FieldValidator::validate_change_password($request);
+        $id = $request->input('id');
+        $old_password = $request->input('old_password');
+        $new_password = $request->input('new_password');
+        $re_password = $request->input('re_password');
+
+        $validator = FieldValidator::validate_change_password($old_password, $new_password, $re_password);
         if ($validator->fails()) {
             return redirect('/field/change-password')
                   ->withErrors($validator)
@@ -165,7 +173,7 @@ class FieldController extends Controller
             ->withInput();;
         }
 
-        $model = $this->account_change_password($request);
+        $model = $this->account_change_password($id, $old_password, $new_password);
         if (!empty($model)) {
             return redirect('/field');
         } else {
@@ -177,7 +185,16 @@ class FieldController extends Controller
 
     public function handle_register(Request $request)
     {
-        $model = $this->account_register($request);
+        $name = $request->input('name');
+        $description = $request->input('description');
+        $email= $request->input('email');
+        $address = $request->input('address');
+        $phone_number = $request->input('phone_number');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $model = $this->account_register($name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude);
         if (!empty($model)) {
             return redirect('/field/login');
         } else {
@@ -190,14 +207,23 @@ class FieldController extends Controller
         $old = Field::find($request->input('id'));
         $valid_old_name = $old->name == $request->input('name');
         $valid_old_username = $old->username == $request->input('username');
-        $validator = FieldValidator::validate_detail_edit($request, $valid_old_name, $valid_old_username);
+
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $description = $request->input('description');
+        $address = $request->input('address');
+        $email = $request->input('email');
+        $phone_number = $request->input('phone_number');
+        $username = $request->input('username');
+
+        $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $username, $valid_old_name, $valid_old_username);
         if ($validator->fails()) {
             return redirect('/admin/edit')
               ->withErrors($validator)
               ->withInput();
         }
 
-        $model = $this->account_edit($request);
+        $model = $this->account_edit($id, $name, $description, $address, $email, $username);
         if (!empty($model)) {
             session(['field' => $model]);
             return redirect('/field/edit');
@@ -207,14 +233,19 @@ class FieldController extends Controller
     }
     public function add_promotion(Request $request)
     {
-        $validator = FieldValidator::validate_promotion_add($request);
+        $id = $request->input('field_id');
+        $title = $request->input('title');
+        $price = $request->input('price');
+        $description = $request->input('description');
+
+        $validator = FieldValidator::validate_promotion_add($title, $price, $description);
         if ($validator->fails()) {
             return redirect('/field/promotions/add')
                     ->withErrors($validator)
                     ->withInput();
         }
 
-        if ($this->promotion_add($request)) {
+        if ($this->promotion_add($id, $title, $price, $description)) {
             return redirect('/field/promotions');
         } else {
             return redirect('/field/promotions/add')
@@ -225,15 +256,19 @@ class FieldController extends Controller
 
     public function edit_promotion(Request $request)
     {
-        $validator = FieldValidator::validate_promotion_edit($request);
+        $id = $request->input('id');
+        $title = $request->input('title');
+        $price = $request->input('price');
+        $description = $request->input('description');
+
+        $validator = FieldValidator::validate_promotion_edit($title, $price, $description);
         if ($validator->fails()) {
             return redirect('/field/promotions/edit/' . $request->input('id'))
                   ->withErrors($validator)
                   ->withInput();
         }
 
-        $id = $request->input('id');
-        if ($this->promotion_edit($id, $request)) {
+        if ($this->promotion_edit($id, $title, $price, $description)) {
             return redirect('/field/promotions');
         } else {
             return redirect('/field/promotions/edit/' . $request->input('id'));
@@ -258,11 +293,9 @@ class FieldController extends Controller
 
     /* API Method */
     /* --Account */
-    public function account_login(Request $request)
+    public function account_login($username, $password)
     {
         try {
-            $username = $request->input('username');
-            $password = $request->input('password');
             $account = Field::where(
                 [
                 ['username', '=', $username],
@@ -275,19 +308,27 @@ class FieldController extends Controller
         }
     }
 
-    public function account_register(Request $request)
-    {
+    public function account_register(
+        $name,
+        $description,
+        $email, $address,
+        $phone_number,
+        $username,
+        $password,
+        $latitude = null,
+        $longitude = null
+    ) {
         try {
             $account = new Field();
-            $account->name = $request->input('name');
-            $account->description = $request->input('description');
-            $account->email = $request->input('email');
-            $account->address = $request->input('address');
-            $account->phone_number = $request->input('phone_number');
-            $account->username = $request->input('username');
-            $account->password = $request->input('password');
-            $account->latitude = $request->input('latitude');
-            $account->longitude = $request->input('longitude');
+            $account->name = $name;
+            $account->description = $description;
+            $account->email = $email;
+            $account->address = $address;
+            $account->phone_number = $phone_number;
+            $account->username = $username;
+            $account->password = $password;
+            $account->latitude = $latitude;
+            $account->longitude = $longitude;
             $account->save();
             return $account;
         } catch (\Exception $e) {
@@ -295,29 +336,38 @@ class FieldController extends Controller
         }
     }
 
-    public function account_edit(Request $request)
-    {
+    public function account_edit(
+        $id,
+        $name,
+        $description,
+        $email, $address,
+        $phone_number,
+        $username,
+        $password,
+        $latitude = null,
+        $longitude = null
+    ) {
         try {
-            $account = Field::find($request->input('id'));
+            $account = Field::find($id);
             if(is_null($account)) {
                 return false;
             } else {
-                $account->name = $request->input('name');
-                $account->description = $request->input('description');
-                $account->email = $request->input('email');
-                $account->address = $request->input('address');
-                $account->phone_number = $request->input('phone_number');
-                $account->username = $request->input('username');
-                if(!is_null($request->input('latitude'))
-                    && !empty($request->input('latitude'))
+                $account->name = $name;
+                $account->description = $description;
+                $account->email = $email;
+                $account->address = $address;
+                $account->phone_number = $phone_number;
+                $account->username = $username;
+                if(!is_null($latitude)
+                    && !empty($latitude)
                 ) {
-                    $account->latitude = $request->input('latitude');
+                    $account->latitude = $latitude;
                 }
 
-                if(!is_null($request->input('longitude'))
-                    && !empty($request->input('longitude'))
+                if(!is_null($longitude)
+                    && !empty($longitude)
                 ) {
-                    $account->latitude = $request->input('longitude');
+                    $account->latitude = $longitude;
                 }
 
                 $account->save();
@@ -328,12 +378,12 @@ class FieldController extends Controller
         }
     }
 
-    public function account_change_password(Request $request)
+    public function account_change_password($id, $old_password, $new_password)
     {
         try {
-            $user = Field::find($request->input('id'));
-            $oldPassword = $request->input('old_password');
-            $newPassword = $request->input('new_password');
+            $user = Field::find($id);
+            $oldPassword = $old_password;
+            $newPassword = $new_password;
             if($user->password === $oldPassword) {
                 $user->password = $newPassword;
                 $user->save();
@@ -346,22 +396,23 @@ class FieldController extends Controller
         }
     }
 
-    public function account_forget(Request $request, $no_mail = false)
+    public function account_forget($username, $email, $no_mail = false)
     {
         try {
-            $account = Field::where('username', '=', $request->input('username'))->first();
+            $account = Field::where('username', '=', $username)->first();
             if(is_null($account)) {
                 return false;
-            } else if($account->email !== $request->input('email')) {
+            } else if($account->email !== $email) {
                 return false;
             }else {
                 if(!$no_mail) {
                     $tempPassword = str_random(10);
                     $message = 'Your new password is ' . $tempPassword;
+                    $account->password = $tempPassword;
                     Mail::raw(
                         $message, $account, function ($message) {
                             $message->from('fieldfinder.mailserver@gmail.com', 'Field Finder Forget Password');
-                            $message->to($request->input('email'));
+                            $message->to($email);
                         }
                     );
                 }
@@ -373,14 +424,14 @@ class FieldController extends Controller
     }
 
     /* --Promotion */
-    public function promotion_add(Request $request)
+    public function promotion_add($field_id, $title, $price, $description)
     {
         try {
             $promotion = new Promotion();
-            $promotion->field_id = $request->input('field_id');
-            $promotion->title = $request->input('title');
-            $promotion->price = $request->input('price');
-            $promotion->description = $request->input('description');
+            $promotion->field_id = $field_id;
+            $promotion->title = $title;
+            $promotion->price = $price;
+            $promotion->description = $description;
             $promotion->save();
             return true;
         } catch (\Exception $e) {
@@ -388,13 +439,13 @@ class FieldController extends Controller
         }
     }
 
-    public function promotion_edit($id, Request $request)
+    public function promotion_edit($id, $title, $price, $description)
     {
         try {
             $promotion = Promotion::find($id);
-            $promotion->title = $request->input('title');
-            $promotion->price = $request->input('price');
-            $promotion->description = $request->input('description');
+            $promotion->title = $title;
+            $promotion->price = $price;
+            $promotion->description = $description;
             $promotion->save();
             return true;
         } catch (\Exception $e) {
@@ -490,10 +541,9 @@ class FieldController extends Controller
     }
 
     /* Mobile */
-    public function search(Request $request)
+    public function search($keyword)
     {
         try {
-            $keyword = $request->input('keyword');
             $result = Field::where('name', 'like', "%$keyword%")->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {

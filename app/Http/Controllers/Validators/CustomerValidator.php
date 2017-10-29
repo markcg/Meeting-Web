@@ -19,10 +19,14 @@ class CustomerValidator
         ];
     }
 
-    public static function validate_edit($request, $valid_old_name)
+    public static function validate_edit($name, $email, $phone_number, $valid_old_name)
     {
         return Validator::make(
-            $request->all(), [
+            [
+            'name' => $name,
+            'email' => $email,
+            'phone_number' => $phone_number
+            ], [
             'name' => $valid_old_name ? 'required' : 'required|unique:customer,name|string|min:4|max:30',
             'email' => 'required|email|min:10|max:30',
             'phone_number' => 'required|digits:10|min:10|max:10'
