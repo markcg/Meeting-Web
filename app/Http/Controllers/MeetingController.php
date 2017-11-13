@@ -86,10 +86,27 @@ class MeetingController extends Controller
         }
     }
 
+    public function search_new_team($keyword, $id)
+    {
+        try {
+            $friends = Meeting::find($id)->teams()->select('team_id')->get();
+            $ids = $friends->map(
+                function ($item, $key) {
+                    return $item->team_id;
+                }
+            )->toArray();
+            $result = Team::whereNotIn('id', $ids)
+            ->where('name', 'like', "%$keyword%")
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function get($id)
     {
         try {
-            $id = $request->input('id');
             $result = Meeting::find($id);
             return is_null($result) ? false : $result;
         } catch (\Exception $e) {
@@ -115,12 +132,52 @@ class MeetingController extends Controller
             } else {
                 $list = [];
                 foreach($result as $item){
-                    $model = $item->member;
+                    $model = $item->team;
+                    $model->team_id = $model->id;
+                    $model->id = $item->id;
                     if(!is_null($model)) {
-                        array_push($list, $item->member);
+                        array_push($list, $item->team);
                     }
                 }
                 return $list;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function optimize($id)
+    {
+        try {
+            $result = Meeting::find($id)->teams;
+            if(is_null($result)) {
+                return false;
+            } else {
+                $list = [];
+                $count = 0;
+                $lat = 0.0;
+                $lng = 0.0;
+                foreach($result as $item){
+                    $model = $item->team;
+                    if(!is_null($model)) {
+                        $members = $model->members;
+                        if(!is_null($model)) {
+                            foreach($members as $memberTeam){
+                                $member = $memberTeam->member;
+                                $lat += $member->latitude;
+                                $lng += $member->longitude;
+                                $count += 1;
+                            }
+                        }
+                    }
+                }
+
+                $avgLat = $lat / $count;
+                $avgLng = $lng / $count;
+                echo $avgLat;
+                echo '<br/>';
+                echo $avgLng;
+                return ;
             }
         } catch (\Exception $e) {
             return false;
