@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use DateTime;
+use Mail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Friend;
 
 class CustomerController extends Controller
 {
@@ -103,23 +105,25 @@ class CustomerController extends Controller
             $account = Customer::where('username', '=', $username)->first();
             if(is_null($account)) {
                 return false;
-            } else if($account->email !== $email) {
+            } else if(strcmp($account->email, $email)) {
                 return false;
             }else {
                 if(!$no_mail) {
                     $tempPassword = str_random(10);
                     $message = 'Your new password is ' . $tempPassword;
                     $account->password = $tempPassword;
+                    $account->save();
                     Mail::raw(
-                        $message, $account, function ($message) {
-                            $message->from('fieldfinder.mailserver@gmail.com', 'Customer Finder Forget Password');
-                            $message->to($email);
+                        $message, function ($message) use ($account) {
+                            $message->from('fieldfinder.mailserver@gmail.com', 'Field Finder Forget Password');
+                            $message->to($account->email);
                         }
                     );
                 }
                 return true;
             }
         } catch (\Exception $e) {
+            echo var_dump($e->getMessage());
             return false;
         }
     }
@@ -184,11 +188,29 @@ class CustomerController extends Controller
         }
     }
 
+    public function search_new_friend($keyword, $id)
+    {
+        try {
+            $friends = Customer::find($id)->friends()->select('friend_id')->get();
+            $ids = $friends->map(
+                function ($item, $key) {
+                    return $item->friend_id;
+                }
+            )->toArray();
+            array_push($ids, $id);
+            $result = Customer::whereNotIn('id', $ids)
+            ->where('name', 'like', "%$keyword%")
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function meetings($id)
     {
         try {
-
-            $result = Customer::find($id)->meetings();
+            $result = Customer::find($id)->meetings()->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
@@ -197,8 +219,7 @@ class CustomerController extends Controller
     public function teams($id)
     {
         try {
-
-            $result = Customer::find($id)->teams();
+            $result = Customer::find($id)->teams()->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
@@ -207,8 +228,21 @@ class CustomerController extends Controller
     public function friends($id)
     {
         try {
-
-            $result = Customer::find($id)->friends();
+            $result = Customer::find($id)
+            ->friends()
+            ->select(
+                'friend.id',
+                'friend.customer_id',
+                'friend.friend_id',
+                'customer.name',
+                'customer.email',
+                'customer.phone_number',
+                'customer.username',
+                'customer.latitude',
+                'customer.longitude'
+            )
+            ->join('customer', 'friend.friend_id', '=', 'customer.id')
+            ->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
@@ -218,7 +252,7 @@ class CustomerController extends Controller
     {
         try {
 
-            $result = Customer::find($id)->requests();
+            $result = Customer::find($id)->requests()->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;
@@ -228,7 +262,7 @@ class CustomerController extends Controller
     {
         try {
 
-            $result = Customer::find($id)->reserves();
+            $result = Customer::find($id)->reserves()->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
             return false;

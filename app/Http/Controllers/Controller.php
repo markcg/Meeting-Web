@@ -10,8 +10,9 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    public function format($status = false, $message = null , $error = null)
+    public function format($message = null , $error = null)
     {
+        $status = !!$message;
         return ["status" => $status, "message" => $message, "error" => $error];
     }
 }
