@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Validator;
 use DateTime;
+use Mail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Validators\FieldValidator;
@@ -409,10 +410,11 @@ class FieldController extends Controller
                     $tempPassword = str_random(10);
                     $message = 'Your new password is ' . $tempPassword;
                     $account->password = $tempPassword;
+                    $account->save();
                     Mail::raw(
-                        $message, $account, function ($message) {
+                        $message, function ($message) use ($account) {
                             $message->from('fieldfinder.mailserver@gmail.com', 'Field Finder Forget Password');
-                            $message->to($email);
+                            $message->to($account->email);
                         }
                     );
                 }

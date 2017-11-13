@@ -19,7 +19,7 @@ class FieldApiController extends Controller
     {
         $username = $request->input('username');
         $password = $request->input('password');
-        return json_encode($this->controller->account_login($username, $password));
+        return json_encode($this->format($this->controller->account_login($username, $password)));
     }
 
     public function register(Request $request)
@@ -33,7 +33,7 @@ class FieldApiController extends Controller
         $password = $request->input('password');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
-        return json_encode($this->controller->account_register($name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude));
+        return json_encode($this->format($this->controller->account_register($name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude)));
     }
 
     public function edit(Request $request)
@@ -48,7 +48,7 @@ class FieldApiController extends Controller
         $password = $request->input('password');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
-        return json_encode($this->controller->account_edit($id, $name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude));
+        return json_encode($this->format($this->controller->account_edit($id, $name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude)));
     }
 
     public function change_password(Request $request)
@@ -57,37 +57,37 @@ class FieldApiController extends Controller
         $old_password = $request->input('old_password');
         $new_password = $request->input('new_password');
         $re_password = $request->input('re_password');
-        return json_encode($this->controller->account_change_password($id, $old_password, $new_password));
+        return json_encode($this->format($this->controller->account_change_password($id, $old_password, $new_password)));
     }
 
     public function forget_password(Request $request)
     {
         $username = $request->input('username');
         $email = $request->input('email');
-        return json_encode($this->controller->account_forget($username, $email));
+        return json_encode($this->format($this->controller->account_forget($username, $email)));
     }
 
     public function search(Request $request)
     {
         $keyword = $request->input('keyword');
-        return json_encode($this->controller->search($keyword));
+        return json_encode($this->format($this->controller->search($keyword)));
     }
 
     /* Schedule */
     public function add_schedule(Request $request)
     {
-        return json_encode($this->controller->add_schedule($request));
+        return json_encode($this->format($this->controller->add_schedule($request)));
     }
     public function delete_schedule(Request $request)
     {
-        return json_encode($this->controller->delete_schedule($request->input('id')));
+        return json_encode($this->format($this->controller->delete_schedule($request->input('id'))));
     }
     public function reserve_schedule(Request $request)
     {
-        return json_encode($this->controller->reserve_schedule($request));
+        return json_encode($this->format($this->controller->reserve_schedule($request)));
     }
     public function confirm_schedule(Request $request)
     {
-        return json_encode($this->controller->confirm_schedule($request));
+        return json_encode($this->format($this->controller->confirm_schedule($request)));
     }
 }
