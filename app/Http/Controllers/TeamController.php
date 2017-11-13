@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\Member;
 use App\Models\Meeting;
+use App\Models\Customer;
 
 class TeamController extends Controller
 {
@@ -89,7 +90,23 @@ class TeamController extends Controller
             return false;
         }
     }
-
+    public function search_new_member($keyword, $id)
+    {
+        try {
+            $friends = Team::find($id)->members()->select('customer_id')->get();
+            $ids = $friends->map(
+                function ($item, $key) {
+                    return $item->customer_id;
+                }
+            )->toArray();
+            $result = Customer::whereNotIn('id', $ids)
+            ->where('name', 'like', "%$keyword%")
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
     public function members($id)
     {
         try {
@@ -99,8 +116,10 @@ class TeamController extends Controller
                 $list = [];
                 foreach($result as $item){
                     $model = $item->member;
+                    $model->customer_id = $model->id;
+                    $model->id = $item->id;
                     if(!is_null($model)) {
-                        array_push($list, $item->member);
+                        array_push($list, $model);
                     }
                 }
                 return $list;
@@ -118,7 +137,9 @@ class TeamController extends Controller
             } else {
                 $list = [];
                 foreach($result as $item){
-                    $model = $item->member;
+                    $model = $item->meeting;
+                    $model->meeting_id = $model->id;
+                    $model->id = $item->id;
                     if(!is_null($model)) {
                         array_push($list, $item->member);
                     }
