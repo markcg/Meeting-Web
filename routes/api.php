@@ -50,6 +50,7 @@ Route::middleware(['api'])->group(
                 Route::get('friend/accept', 'CustomerApiController@friend_accept');
                 Route::get('friend/reject', 'CustomerApiController@friend_reject');
                 Route::get('friend/delete', 'CustomerApiController@friend_delete');
+                Route::get('friend/new/search', 'CustomerApiController@search_new_friend');
 
                 Route::get('get/meetings', 'CustomerApiController@meetings');
                 Route::get('get/teams', 'CustomerApiController@teams');
@@ -66,10 +67,12 @@ Route::middleware(['api'])->group(
                 Route::get('delete', 'MeetingApiController@delete');
                 Route::get('team/add', 'MeetingApiController@add_team');
                 Route::get('team/delete', 'MeetingApiController@delete_team');
+                Route::get('team/new/search', 'MeetingApiController@search_new_team');
                 Route::get('search', 'MeetingApiController@search');
                 Route::get('get', 'MeetingApiController@get');
                 Route::get('get/teams', 'MeetingApiController@teams');
                 Route::get('get/schedules', 'MeetingApiController@schedules');
+                Route::get('get/optimize', 'MeetingApiController@optimize');
             }
         );
 
@@ -80,6 +83,7 @@ Route::middleware(['api'])->group(
                 Route::get('delete', 'TeamApiController@delete');
                 Route::get('member/add', 'TeamApiController@add_member');
                 Route::get('member/delete', 'TeamApiController@delete_member');
+                Route::get('member/new/search', 'TeamApiController@search_new_member');
                 Route::get('search', 'TeamApiController@search');
                 Route::get('get', 'TeamApiController@get');
                 Route::get('get/members', 'TeamApiController@members');
