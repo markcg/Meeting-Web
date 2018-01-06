@@ -11,6 +11,7 @@ use App\Http\Controllers\Validators\FieldValidator;
 use App\Models\Field;
 use App\Models\Promotion;
 use App\Models\Schedule;
+use App\Models\Customer;
 
 class FieldController extends Controller
 {
@@ -279,8 +280,12 @@ class FieldController extends Controller
     public function handle_schedule(Request $request)
     {
         $id = $request->input('id');
+        $status = $request->input('status');
+
         if ($id === null) {
             $this->schedule_reserve($request);
+        } if($status !== null && $status == 0) {
+            $this->schedule_confirm($id);
         } else {
             $this->schedule_delete($id);
         }
@@ -529,7 +534,7 @@ class FieldController extends Controller
         try {
             $schedule = new Schedule();
             $schedule->field_id = $request->input('field_id');
-            $schedule->date = $request->input('date');
+            $schedule->date = date('Y-m-d', strtotime($request->input('date')));
             $schedule->time = $request->input('time');
             if($request->has('status')) {
                 $schedule->status = $request->input('status');
@@ -541,7 +546,48 @@ class FieldController extends Controller
             return false;
         }
     }
+    public function schedule_reserve_by_user(Request $request)
+    {
+        try {
+            $customer = Customer::find($request->input('customer_id'));
+            $schedule = new Schedule();
+            $schedule->field_id = $request->input('field_id');
+            $schedule->date = date('Y-m-d', strtotime($request->input('date')));
+            $schedule->time = $request->input('time');
+            $schedule->customer_id = $request->input('customer_id');
 
+            if($request->has('status')) {
+                $schedule->status = $request->input('status');
+            }
+            $schedule->schedule = 'Reserve by ' . $customer->name . ' at ' . date('Y-m-d H:i:s') . ' , Contact: ' . $customer->phone_number;
+            $schedule->save();
+            return true;
+        } catch (\Exception $e) {
+            echo var_dump($e);
+            return $e;
+        }
+    }
+    public function schedule_reserve_by_meeting(Request $request)
+    {
+        try {
+            $meeting = Meeting::find($request->input('meeting_id'));
+
+            $schedule = new Schedule();
+            $schedule->field_id = $request->input('field_id');
+            $schedule->date = date('Y-m-d', strtotime($request->input('date')));
+            $schedule->time = $request->input('time');
+            $schedule->meeting_id = $request->input('meeting_id');
+
+            if($request->has('status')) {
+                $schedule->status = $request->input('status');
+            }
+            $schedule->schedule = 'Reserve by ' . $meeting->name . ' at ' . date('Y-m-d H:i:s') . ' , Contact: ' . $meeting->customer->phone_number;
+            $schedule->save();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
     /* Mobile */
     public function search($keyword)
     {
@@ -553,23 +599,45 @@ class FieldController extends Controller
         }
     }
 
-    public function scheduleByName(Request $request)
+    public function scheduleById($id, $date)
     {
         try {
-            $keyword = $request->input('keyword');
-            $date = $request->input('date');
-
-            $field = Field::where('name', 'like', "%$keyword%")->first();
-            $next = DateTime::createFromFormat('Y-m-d', $date);
-            $formatted = $next->format('Y-m-d');
+            $field = Field::find($id);
+            // $next = DateTime::createFromFormat('Y-m-d', $date);
+            $formatted = date('Y-m-d', strtotime($date));
             $data = Schedule::where(
                 [
                 ['field_id', '=', $field->id],
                 ['date', '=', $formatted]
                 ]
             )->orderBy('time', 'desc')->get();
-            $reserved = $data;
-            return empty($reserved) ? false : $reserved;
+            $reserved = !is_null($field) && !is_null($data) ? $data : [];
+            return empty($reserved) && is_null($field) ? false : [
+              "reserved" => $reserved,
+              "field" => $field
+            ];
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function scheduleByName($keyword, $date)
+    {
+        try {
+            $field = Field::where('name', 'like', "%$keyword%")->first();
+            // $next = DateTime::createFromFormat('Y-m-d', $date);
+            $formatted = date('Y-m-d', strtotime($date));
+            $data = Schedule::where(
+                [
+                ['field_id', '=', $field->id],
+                ['date', '=', $formatted]
+                ]
+            )->orderBy('time', 'desc')->get();
+            $reserved = !is_null($field) && !is_null($data) ? $data : [];
+            return empty($reserved) && is_null($field) ? false : [
+              "reserved" => $reserved,
+              "field" => $field
+            ];
         } catch (\Exception $e) {
             return false;
         }

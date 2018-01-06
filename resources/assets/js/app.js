@@ -71,12 +71,28 @@ window.meetingApp = (function() {
     timeInput.val(time);
     const typeInput = $('<input type="hidden" name="type" value="reserved" />');
     const button = $('<button type="submit"></button>');
-    if (type === "reserved") {
+    let statusInput;
+    if (type === "reserved" && obj && obj.status === null) {
       button.text("Reserved");
       button.addClass("btn btn-warning");
       button.click(() => {
         return confirm("Do you want to cancel the reservation?");
       });
+    } else if(obj && obj.status === 0){
+      button.text("Requested");
+      button.addClass("btn btn-info");
+      button.click(() => {
+        return confirm(obj.schedule + ", Do you want to confirm the reservation?");
+      });
+      statusInput = $('<input type="hidden" name="status" value="' + obj.status + '" />');
+    } else if(obj && obj.status === 1){
+      button.text("Reserved");
+      button.addClass("btn btn-warning");
+      button.click(() => {
+        return confirm(obj.schedule + ", Do you want to cancel the reservation?");
+      });
+      statusInput = $('<input type="hidden" name="status" value="' + obj.status + '" />');
+      form.append(statusInput);
     } else {
       button.text("Available");
       button.addClass("btn btn-success");
@@ -88,6 +104,7 @@ window.meetingApp = (function() {
     form.append(dateInput);
     form.append(timeInput);
     form.append(typeInput);
+    form.append(statusInput);
     form.append(button);
     if (obj) {
       const id = $('<input type="hidden" name="id" />');

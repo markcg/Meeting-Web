@@ -26,6 +26,8 @@ Route::middleware(['api'])->group(
                 Route::get('register', 'FieldApiController@register');
                 Route::get('edit', 'FieldApiController@esit');
                 Route::get('search', 'FieldApiController@search');
+                Route::get('schedule-by-name', 'FieldApiController@scheduleByName');
+                Route::get('schedule-by-id', 'FieldApiController@scheduleById');
                 Route::get('forget-password', 'FieldApiController@forget_password');
                 Route::get('change-password', 'FieldApiController@change_password');
                 /* Get */
@@ -33,6 +35,8 @@ Route::middleware(['api'])->group(
                 Route::get('schedule/delete/{id}', 'FieldApiController@delete_schedule');
                 Route::get('schedule/confirm/{id}', 'FieldApiController@confirm_schedule');
                 Route::get('schedule/reserve', 'FieldApiController@reserve_schedule');
+                Route::get('schedule/reserve-by-user', 'FieldApiController@reserve_schedule_by_user');
+                Route::get('schedule/reserve-by-meeting', 'FieldApiController@reserve_schedule_by_meeting');
             }
         );
 

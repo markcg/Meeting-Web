@@ -9,6 +9,7 @@ use App\Models\Meeting;
 use App\Models\MeetingTeam;
 use App\Models\Schedule;
 use App\Models\Team;
+use App\Models\Field;
 
 class MeetingController extends Controller
 {
@@ -21,7 +22,7 @@ class MeetingController extends Controller
             $model = new Meeting();
             $model->customer_id = $customer_id;
             $model->name = $name;
-            $model->date = $date;
+            $model->date = date('Y-m-d', strtotime($date));
             $model->start = $start;
             $model->end = $end;
             $model->detail = $detail;
@@ -149,7 +150,8 @@ class MeetingController extends Controller
     public function optimize($id)
     {
         try {
-            $result = Meeting::find($id)->teams;
+            $meeting = Meeting::find($id);
+            $result = $meeting->teams;
             if(is_null($result)) {
                 return false;
             } else {
@@ -174,10 +176,30 @@ class MeetingController extends Controller
 
                 $avgLat = $lat / $count;
                 $avgLng = $lng / $count;
-                echo $avgLat;
-                echo '<br/>';
-                echo $avgLng;
-                return ;
+
+                $fields = Field::orderBy('latitude', 'DESC')
+                ->orderBy('longitude', 'DESC')
+                ->take(10)
+                ->get();
+
+                $next = DateTime::createFromFormat('Y-m-d', $meeting->date);
+                $formatted = $next->format('Y-m-d');
+
+                $available = [];
+                foreach ($fields as $key => $field) {
+                    $data = Schedule::where(
+                        [
+                        ['field_id', '=', $field->id],
+                        ['date', '=', $formatted],
+                        ['time', '>=', $meeting->start],
+                        ['time', '<=', $meeting->end]
+                        ]
+                    )->orderBy('time', 'desc')->get();
+                    if($data->count() == 0) { array_push($available, $field);
+                    }
+                }
+
+                return $available;
             }
         } catch (\Exception $e) {
             return false;

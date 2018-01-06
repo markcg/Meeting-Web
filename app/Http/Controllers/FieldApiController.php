@@ -73,6 +73,19 @@ class FieldApiController extends Controller
         return json_encode($this->format($this->controller->search($keyword)));
     }
 
+    public function scheduleByName(Request $request)
+    {
+        $keyword = $request->input('keyword');
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        return json_encode($this->format($this->controller->scheduleByName($keyword, $date)));
+    }
+
+    public function scheduleById(Request $request)
+    {
+        $id = $request->input('id');
+        $date = date('Y-m-d', strtotime($request->input('date')));
+        return json_encode($this->format($this->controller->scheduleById($id, $date)));
+    }
     /* Schedule */
     public function add_schedule(Request $request)
     {
@@ -84,7 +97,15 @@ class FieldApiController extends Controller
     }
     public function reserve_schedule(Request $request)
     {
-        return json_encode($this->format($this->controller->reserve_schedule($request)));
+        return json_encode($this->format($this->controller->schedule_reserve($request)));
+    }
+    public function reserve_schedule_by_user(Request $request)
+    {
+        return json_encode($this->format($this->controller->schedule_reserve_by_user($request)));
+    }
+    public function reserve_schedule_by_meeting(Request $request)
+    {
+        return json_encode($this->format($this->controller->schedule_reserve_by_meeting($request)));
     }
     public function confirm_schedule(Request $request)
     {
