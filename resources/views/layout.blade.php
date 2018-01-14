@@ -13,7 +13,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
   <script src="/js/app.js"></script>
-
+  @yield('styles')
 </head>
 <body>
   <div class="flex-center position-ref full-height">

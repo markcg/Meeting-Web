@@ -20,8 +20,12 @@ class FieldController extends Controller
         $this->middleware(
             'field', ['except' => [
             'login',
+            'register',
+            'forgot_password',
             'handle_login',
             'handle_schedule',
+            'handle_register',
+            'handle_forgot_password',
             'add_schedule',
             'delete_schedule',
             'confirm_schedule',
@@ -41,7 +45,14 @@ class FieldController extends Controller
     {
         return view('field.login');
     }
-
+    public function register()
+    {
+        return view('field.register');
+    }
+    public function forgot_password()
+    {
+        return view('field.forgot_password');
+    }
     public function logout(Request $request)
     {
         $request->session()->forget('field');
@@ -196,11 +207,34 @@ class FieldController extends Controller
         $password = $request->input('password');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
+
+        $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $phone_number, $username);
+        if ($validator->fails()) {
+            return redirect('/field/register')
+              ->withErrors($validator)
+              ->withInput();
+        }
+
         $model = $this->account_register($name, $description, $email, $address, $phone_number, $username, $password, $latitude, $longitude);
         if (!empty($model)) {
+            $request->session()->put('success', ['Register successful, Please login']);
             return redirect('/field/login');
         } else {
             return redirect('/field/register');
+        }
+    }
+
+    public function handle_forgot_password(Request $request)
+    {
+        $username = $request->input('username');
+        $email = $request->input('email');
+
+        $result = $this->account_forget($username, $email);
+        if ($result) {
+            $request->session()->put('success', ['Please check your email address inbox, ' . $email]);
+            return redirect('/field/login');
+        } else {
+            return redirect('/field/forgot-password');
         }
     }
 
@@ -218,14 +252,22 @@ class FieldController extends Controller
         $phone_number = $request->input('phone_number');
         $username = $request->input('username');
 
-        $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $username, $valid_old_name, $valid_old_username);
+        $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $phone_number, $username, $valid_old_name, $valid_old_username);
         if ($validator->fails()) {
-            return redirect('/admin/edit')
+            return redirect('/field/edit')
               ->withErrors($validator)
               ->withInput();
         }
 
-        $model = $this->account_edit($id, $name, $description, $address, $email, $username);
+        $model = $this->account_edit(
+            $id,
+            $name,
+            $description,
+            $email,
+            $address,
+            $phone_number,
+            $username
+        );
         if (!empty($model)) {
             session(['field' => $model]);
             return redirect('/field/edit');
@@ -286,6 +328,8 @@ class FieldController extends Controller
             $this->schedule_reserve($request);
         } if($status !== null && $status == 0) {
             $this->schedule_confirm($id);
+        } if($status !== null && $status == 2) {
+            $this->schedule_confirm($id);
         } else {
             $this->schedule_delete($id);
         }
@@ -297,6 +341,37 @@ class FieldController extends Controller
         return redirect($redirect);
     }
 
+    public function handle_report_schedule_confirm(Request $request)
+    {
+        $id = $request->input('id');
+        $this->schedule_confirm($id);
+        $redirect = '/field/report';
+        return redirect($redirect);
+    }
+
+    public function handle_report_schedule_cancel(Request $request)
+    {
+        $id = $request->input('id');
+        $this->schedule_cancel($id);
+        $redirect = '/field/report';
+        return redirect($redirect);
+    }
+
+    public function handle_report_schedule_show(Request $request)
+    {
+        $id = $request->input('id');
+        $this->schedule_show($id);
+        $redirect = '/field/report';
+        return redirect($redirect);
+    }
+
+    public function handle_report_schedule_not_show(Request $request)
+    {
+        $id = $request->input('id');
+        $this->schedule_not_show($id);
+        $redirect = '/field/report';
+        return redirect($redirect);
+    }
     /* API Method */
     /* --Account */
     public function account_login($username, $password)
@@ -346,10 +421,10 @@ class FieldController extends Controller
         $id,
         $name,
         $description,
-        $email, $address,
+        $email,
+        $address,
         $phone_number,
         $username,
-        $password,
         $latitude = null,
         $longitude = null
     ) {
@@ -507,6 +582,36 @@ class FieldController extends Controller
                 return false;
             } else {
                 $schedule->status = 1;
+                $schedule->save();
+            }
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    public function schedule_show($id)
+    {
+        try {
+            $schedule = Schedule::find($id);
+            if (is_null($schedule)) {
+                return false;
+            } else {
+                $schedule->status = 2;
+                $schedule->save();
+            }
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    public function schedule_not_show($id)
+    {
+        try {
+            $schedule = Schedule::find($id);
+            if (is_null($schedule)) {
+                return false;
+            } else {
+                $schedule->status = 3;
                 $schedule->save();
             }
             return true;

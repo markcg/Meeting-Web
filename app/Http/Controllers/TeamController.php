@@ -81,6 +81,21 @@ class TeamController extends Controller
         }
     }
 
+    public function confirm_member($id)
+    {
+        try {
+            $result = TeamMember::find($id);
+            if(!is_null($result)) {
+                $result->confirm = 1;
+                $result->save();
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function search($keyword)
     {
         try {
@@ -110,7 +125,7 @@ class TeamController extends Controller
     public function members($id)
     {
         try {
-            $result = Team::find($id)->members;
+            $result = Team::find($id)->members()->where('confirm', '=', '1')->get();
             if(is_null($result)) { return false;
             } else {
                 $list = [];

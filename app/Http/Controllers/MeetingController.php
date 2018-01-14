@@ -75,6 +75,22 @@ class MeetingController extends Controller
         }
     }
 
+    public function confirm_team($id)
+    {
+        try {
+            $result = MeetingTeam::find($id);
+            if(!is_null($result)) {
+                $result->confirm = 1;
+                $result->save();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function search($customerId, $keyword)
     {
         try {
@@ -136,6 +152,7 @@ class MeetingController extends Controller
                     $model = $item->team;
                     $model->team_id = $model->id;
                     $model->id = $item->id;
+                    $model->confirm = $item->confirm;
                     if(!is_null($model)) {
                         array_push($list, $item->team);
                     }
@@ -195,13 +212,21 @@ class MeetingController extends Controller
                         ['time', '<=', $meeting->end]
                         ]
                     )->orderBy('time', 'desc')->get();
-                    if($data->count() == 0) { array_push($available, $field);
+                    $promotions = $field->promotions();
+                    $promotion = $promotions->orderBy('id', 'desc')->first();
+                    $field->promotion_name = $promotion ? $promotion->title : "";
+                    $field->promotion_price = $promotion ? $promotion->price : "";
+                    $field->promotion_description = $promotion ? $promotion->description : "";
+
+                    if($data->count() == 0) {
+                        array_push($available, $field);
                     }
                 }
 
                 return $available;
             }
         } catch (\Exception $e) {
+            echo $e;
             return false;
         }
     }

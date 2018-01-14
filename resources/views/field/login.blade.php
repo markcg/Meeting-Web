@@ -31,6 +31,18 @@
               </div>
             </div>
           </form>
+          <div class="col-sm-12" style="margin-top: 20px;">
+            <div class="col-sm-6">
+              <a href="{{action('FieldController@forgot_password')}}" class="btn btn-warning btn-block">
+                Forgot Password
+              </a>
+            </div>
+            <div class="col-sm-6">
+              <a href="{{action('FieldController@register')}}" class="btn btn-info btn-block">
+                Register
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

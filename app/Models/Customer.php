@@ -31,4 +31,15 @@ class Customer extends Model
     {
         return $this->hasMany('App\Models\Schedule');
     }
+
+    public function attendance()
+    {
+        $reserves = $this->reserves()->where('status', '=', '1')->get();
+        $showup = $this->reserves()->where('status', '=', '2')->get();
+        $notshowup = $this->reserves()->where('status', '=', '3')->get();
+
+        $total = $showup->count() + $notshowup->count();
+        $check = $total > 0 ? ($showup->count() * 100) / $total : 100;
+        return $check;
+    }
 }

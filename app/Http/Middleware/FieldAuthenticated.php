@@ -20,6 +20,6 @@ class FieldAuthenticated
             return $next($request);
         }
 
-        return redirect('/field/login');;
+        return redirect('/field/login');
     }
 }

@@ -46,12 +46,21 @@ class CustomerApiController extends Controller
         return json_encode($this->format($this->controller->account_edit($id, $name, $email, $phone_number, $username, $password, $latitude, $longitude)));
     }
 
+    public function account_edit_profile(Request $request)
+    {
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $phone_number = $request->input('phone_number');
+        return json_encode($this->format($this->controller->account_edit_profile($id, $name, $email, $phone_number)));
+    }
+
     public function account_change_password(Request $request)
     {
         $id = $request->input('id');
         $old_password = $request->input('old_password');
         $new_password = $request->input('new_password');
-        $re_password = $request->input('re_password');
+        // $re_password = $request->input('re_password');
         return json_encode($this->format($this->controller->account_change_password($id, $old_password, $new_password)));
     }
 
@@ -110,10 +119,20 @@ class CustomerApiController extends Controller
         $id = $request->input('id');
         return json_encode($this->format($this->controller->teams($id)));
     }
+    public function teams_invite(Request $request)
+    {
+        $id = $request->input('id');
+        return json_encode($this->format($this->controller->teams_invite($id)));
+    }
     public function friends(Request $request)
     {
         $id = $request->input('id');
         return json_encode($this->format($this->controller->friends($id)));
+    }
+    public function friends_request(Request $request)
+    {
+        $id = $request->input('id');
+        return json_encode($this->format($this->controller->friends_request($id)));
     }
     public function requests(Request $request)
     {

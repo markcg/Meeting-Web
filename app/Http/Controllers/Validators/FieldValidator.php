@@ -74,7 +74,7 @@ class FieldValidator
     {
         return [
         'title.unique' => 'Promotion name is already in use!',
-        'title.alpha_dash' => 'Promotion name is incorrect format. Please use only a-z, A-Z and 0-9',
+        'title.alpha_spaces' => 'Promotion name is incorrect format. Please use only a-z, A-Z and 0-9',
         'title.min' => 'Please input 4-30 characters',
         'title.max' => 'Please input 4-30 characters',
         'price.numeric' => 'Price is incorrect format. Please use only 0-9 and comma',
@@ -132,7 +132,7 @@ class FieldValidator
             FieldValidator::edit_message()
         );
     }
-    public static function validate_detail_edit($name, $description, $address, $email, $username, $valid_old_name = false, $valid_old_username = false)
+    public static function validate_detail_edit($name, $description, $address, $email, $phone_number, $username, $valid_old_name = false, $valid_old_username = false)
     {
         return Validator::make(
             [
@@ -145,7 +145,7 @@ class FieldValidator
             ], [
             'name' => $valid_old_name ? 'required' : 'required|unique:field,name|alpha_spaces|min:4|max:30',
             'description' => 'required|alpha_spaces|min:10|max:30',
-            'address' => 'required|alpha_spaces|min:20|max:100',
+            'address' => 'required|min:20|max:100',
             'email' => 'required|email|min:10|max:30',
             'phone_number' => 'required|digits:10|min:10|max:10',
             'username' => $valid_old_username ? 'required' : 'required|unique:field,username|alpha_spaces|min:4|max:10',
@@ -161,7 +161,7 @@ class FieldValidator
               'price' => $price,
               'description' => $decription,
             ], [
-            'title' => 'required|alpha_dash|min:4|max:30',
+            'title' => 'required|alpha_spaces|min:4|max:30',
             'price' => 'required|numeric|min:10|max:9999999999',
             'description' => 'required|alpha_spaces|min:10|max:250',
             ],

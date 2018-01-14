@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Friend;
+use App\Models\TeamMember;
 
 class CustomerController extends Controller
 {
@@ -80,7 +81,23 @@ class CustomerController extends Controller
             return false;
         }
     }
-
+    public function account_edit_profile($id, $name, $email, $phone_number)
+    {
+        try {
+            $account = Customer::find($id);
+            if(is_null($account)) {
+                return false;
+            } else {
+                $account->name = $name;
+                $account->email = $email;
+                $account->phone_number = $phone_number;
+                $account->save();
+                return $account;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
     public function account_change_password($id, $old_password, $new_password)
     {
         try {
@@ -148,6 +165,7 @@ class CustomerController extends Controller
             $friend = Friend::find($id);
             $friend->confirm = 1;
             $friend->save();
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -225,6 +243,25 @@ class CustomerController extends Controller
             return false;
         }
     }
+    public function teams_invite($id)
+    {
+        try {
+            $result = TeamMember::select(
+                'team_member.id',
+                'team_member.customer_id',
+                'team.id AS team_id',
+                'team.name',
+                'team.description'
+            )
+            ->join('team', 'team_member.team_id', '=', 'team.id')
+            ->where('team_member.customer_id', '=', $id)
+            ->where('team_member.confirm', '=', '0')
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
     public function friends($id)
     {
         try {
@@ -242,6 +279,36 @@ class CustomerController extends Controller
                 'customer.longitude'
             )
             ->join('customer', 'friend.friend_id', '=', 'customer.id')
+            ->where(
+                function ($query) use ($id) {
+                    $query->where('friend.confirm', '=', '1')
+                        ->where('friend.customer_id', '=', $id);
+                }
+            )
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            // echo $e->getSql();
+            return false;
+        }
+    }
+    public function friends_request($id)
+    {
+        try {
+            $result = Friend::select(
+                'friend.id',
+                'friend.customer_id',
+                'friend.friend_id',
+                'customer.name',
+                'customer.email',
+                'customer.phone_number',
+                'customer.username',
+                'customer.latitude',
+                'customer.longitude'
+            )
+            ->join('customer', 'friend.friend_id', '=', 'customer.id')
+            ->where('friend.confirm', '=', '0')
+            ->where('friend.friend_id', '=', $id)
             ->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {

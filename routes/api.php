@@ -46,6 +46,7 @@ Route::middleware(['api'])->group(
                 Route::get('login', 'CustomerApiController@account_login');
                 Route::get('register', 'CustomerApiController@account_register');
                 Route::get('edit', 'CustomerApiController@account_edit');
+                Route::get('edit-profile', 'CustomerApiController@account_edit_profile');
                 Route::get('search', 'CustomerApiController@search');
                 Route::get('forget-password', 'CustomerApiController@account_forget');
                 Route::get('change-password', 'CustomerApiController@account_change_password');
@@ -58,7 +59,9 @@ Route::middleware(['api'])->group(
 
                 Route::get('get/meetings', 'CustomerApiController@meetings');
                 Route::get('get/teams', 'CustomerApiController@teams');
+                Route::get('get/teams-invite', 'CustomerApiController@teams_invite');
                 Route::get('get/friends', 'CustomerApiController@friends');
+                Route::get('get/friends-request', 'CustomerApiController@friends_request');
                 Route::get('get/requests', 'CustomerApiController@requests');
                 Route::get('get/reserves', 'CustomerApiController@reserves');
             }
@@ -71,6 +74,7 @@ Route::middleware(['api'])->group(
                 Route::get('delete', 'MeetingApiController@delete');
                 Route::get('team/add', 'MeetingApiController@add_team');
                 Route::get('team/delete', 'MeetingApiController@delete_team');
+                Route::get('team/confirm', 'MeetingApiController@confirm_team');
                 Route::get('team/new/search', 'MeetingApiController@search_new_team');
                 Route::get('search', 'MeetingApiController@search');
                 Route::get('get', 'MeetingApiController@get');
@@ -87,6 +91,7 @@ Route::middleware(['api'])->group(
                 Route::get('delete', 'TeamApiController@delete');
                 Route::get('member/add', 'TeamApiController@add_member');
                 Route::get('member/delete', 'TeamApiController@delete_member');
+                Route::get('member/confirm', 'TeamApiController@confirm_member');
                 Route::get('member/new/search', 'TeamApiController@search_new_member');
                 Route::get('search', 'TeamApiController@search');
                 Route::get('get', 'TeamApiController@get');
