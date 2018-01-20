@@ -58,8 +58,10 @@ Route::middleware(['api'])->group(
                 Route::get('friend/new/search', 'CustomerApiController@search_new_friend');
 
                 Route::get('get/meetings', 'CustomerApiController@meetings');
+                Route::get('get/meetings-invite', 'CustomerApiController@meetings_invite');
                 Route::get('get/teams', 'CustomerApiController@teams');
                 Route::get('get/teams-invite', 'CustomerApiController@teams_invite');
+                Route::get('get/teams-member', 'CustomerApiController@teams_member');
                 Route::get('get/friends', 'CustomerApiController@friends');
                 Route::get('get/friends-request', 'CustomerApiController@friends_request');
                 Route::get('get/requests', 'CustomerApiController@requests');
@@ -75,6 +77,7 @@ Route::middleware(['api'])->group(
                 Route::get('team/add', 'MeetingApiController@add_team');
                 Route::get('team/delete', 'MeetingApiController@delete_team');
                 Route::get('team/confirm', 'MeetingApiController@confirm_team');
+                Route::get('team/accept', 'MeetingApiController@accept_team');
                 Route::get('team/new/search', 'MeetingApiController@search_new_team');
                 Route::get('search', 'MeetingApiController@search');
                 Route::get('get', 'MeetingApiController@get');

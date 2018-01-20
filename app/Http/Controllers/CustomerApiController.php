@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Validators\CustomerValidator;
 
 class CustomerApiController extends Controller
 {
@@ -30,6 +31,13 @@ class CustomerApiController extends Controller
         $password = $request->input('password');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
+
+        $validate = new CustomerValidator();
+        $result = $validate->validate_regsiter($name, $username, $email, $phone_number);
+        if ($result->fails()) {
+            $errors = $result->errors()->all();
+            return json_encode($this->format(null, $errors[0]));
+        }
         return json_encode($this->format($this->controller->account_register($name, $email, $phone_number, $username, $password, $latitude, $longitude)));
     }
 
@@ -114,6 +122,11 @@ class CustomerApiController extends Controller
         $id = $request->input('id');
         return json_encode($this->format($this->controller->meetings($id)));
     }
+    public function meetings_invite(Request $request)
+    {
+        $id = $request->input('id');
+        return json_encode($this->format($this->controller->meetings_invite($id)));
+    }
     public function teams(Request $request)
     {
         $id = $request->input('id');
@@ -123,6 +136,11 @@ class CustomerApiController extends Controller
     {
         $id = $request->input('id');
         return json_encode($this->format($this->controller->teams_invite($id)));
+    }
+    public function teams_member(Request $request)
+    {
+        $id = $request->input('id');
+        return json_encode($this->format($this->controller->teams_member($id)));
     }
     public function friends(Request $request)
     {

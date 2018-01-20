@@ -75,12 +75,28 @@ class MeetingController extends Controller
         }
     }
 
-    public function confirm_team($id)
+    public function accept_team($id)
     {
         try {
             $result = MeetingTeam::find($id);
             if(!is_null($result)) {
                 $result->confirm = 1;
+                $result->save();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function confirm_team($id)
+    {
+        try {
+            $result = MeetingTeam::find($id);
+            if(!is_null($result)) {
+                $result->confirm = 2;
                 $result->save();
                 return true;
             } else {
@@ -153,7 +169,7 @@ class MeetingController extends Controller
                     $model->team_id = $model->id;
                     $model->id = $item->id;
                     $model->confirm = $item->confirm;
-                    if(!is_null($model)) {
+                    if(!is_null($model) && $model->confirm != 0) {
                         array_push($list, $item->team);
                     }
                 }

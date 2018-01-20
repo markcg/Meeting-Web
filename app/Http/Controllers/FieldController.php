@@ -129,9 +129,10 @@ class FieldController extends Controller
         return view('field.schedule', ['schedules' => $reserved]);
     }
 
-    public function report()
+    public function report(Request $request)
     {
-        $field = Field::first();
+        $session = $request->session()->get('field');
+        $field = Field::find($session->id);
         $schedules = $field->schedules;
         return view('field.report', [ 'schedules' =>  $schedules]);
     }

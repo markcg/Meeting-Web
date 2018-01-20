@@ -10,6 +10,7 @@ use App\Models\TeamMember;
 use App\Models\Member;
 use App\Models\Meeting;
 use App\Models\Customer;
+use App\Models\Friend;
 
 class TeamController extends Controller
 {
@@ -108,13 +109,25 @@ class TeamController extends Controller
     public function search_new_member($keyword, $id)
     {
         try {
-            $friends = Team::find($id)->members()->select('customer_id')->get();
-            $ids = $friends->map(
+            $team = Team::find($id);
+            $members = $team->members()->select('customer_id')->get();
+            $friends = Friend::where('customer_id', '=', $team->customer_id)
+            ->where('confirm', '=', '1')
+            ->get();
+
+            $friendIds = $friends->map(
+                function ($item, $key) {
+                    return $item->friend_id;
+                }
+            )->toArray();
+            // echo var_dump($friendIds);
+            $ids = $members->map(
                 function ($item, $key) {
                     return $item->customer_id;
                 }
             )->toArray();
             $result = Customer::whereNotIn('id', $ids)
+            ->whereIn('id', $friendIds)
             ->where('name', 'like', "%$keyword%")
             ->get();
             return empty($result) ? false : $result;

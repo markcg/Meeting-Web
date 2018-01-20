@@ -7,6 +7,8 @@ use Mail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Meeting;
+use App\Models\MeetingTeam;
 use App\Models\Friend;
 use App\Models\TeamMember;
 
@@ -166,6 +168,11 @@ class CustomerController extends Controller
             $friend->confirm = 1;
             $friend->save();
 
+            $customer = new Friend();
+            $customer->friend_id = $friend->customer_id;
+            $customer->customer_id = $friend->friend_id;
+            $customer->confirm = 1;
+            $customer->save();
             return true;
         } catch (\Exception $e) {
             return false;
@@ -188,6 +195,10 @@ class CustomerController extends Controller
     {
         try {
             $friend = Friend::find($id);
+            $customer = Friend::where('customer_id', '=', $friend->friend_id)
+            ->where('friend_id', '=', $friend->customer_id)
+            ->first();
+            $customer->delete();
             $friend->delete();
             return true;
         } catch (\Exception $e) {
@@ -234,6 +245,26 @@ class CustomerController extends Controller
             return false;
         }
     }
+    public function meetings_invite($id)
+    {
+        try {
+            $result = MeetingTeam::select(
+                'meeting_team.id',
+                'meeting.customer_id',
+                'meeting.name',
+                'meeting.detail',
+                'team.name as team_name'
+            )
+            ->join('team', 'meeting_team.team_id', '=', 'team.id')
+            ->join('meeting', 'meeting_team.meeting_id', '=', 'meeting.id')
+            ->where('team.customer_id', '=', $id)
+            ->where('meeting_team.confirm', '=', '0')
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
     public function teams($id)
     {
         try {
@@ -256,6 +287,25 @@ class CustomerController extends Controller
             ->join('team', 'team_member.team_id', '=', 'team.id')
             ->where('team_member.customer_id', '=', $id)
             ->where('team_member.confirm', '=', '0')
+            ->get();
+            return empty($result) ? false : $result;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    public function teams_member($id)
+    {
+        try {
+            $result = TeamMember::select(
+                'team_member.id',
+                'team_member.customer_id',
+                'team.id AS team_id',
+                'team.name',
+                'team.description'
+            )
+            ->join('team', 'team_member.team_id', '=', 'team.id')
+            ->where('team_member.customer_id', '=', $id)
+            ->where('team_member.confirm', '=', '1')
             ->get();
             return empty($result) ? false : $result;
         } catch (\Exception $e) {
@@ -306,7 +356,7 @@ class CustomerController extends Controller
                 'customer.latitude',
                 'customer.longitude'
             )
-            ->join('customer', 'friend.friend_id', '=', 'customer.id')
+            ->join('customer', 'friend.customer_id', '=', 'customer.id')
             ->where('friend.confirm', '=', '0')
             ->where('friend.friend_id', '=', $id)
             ->get();

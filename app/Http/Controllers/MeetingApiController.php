@@ -49,6 +49,12 @@ class MeetingApiController extends Controller
         return json_encode($this->format($this->controller->confirm_team($id)));
     }
 
+    public function accept_team(Request $request)
+    {
+        $id = $request->input('id');
+        return json_encode($this->format($this->controller->accept_team($id)));
+    }
+
     public function search(Request $request)
     {
         $id = $request->input('id');

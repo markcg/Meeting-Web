@@ -17,8 +17,24 @@ class CustomerValidator
         'phone_number.min' => 'Please input 10 characters',
         ];
     }
-  
-    public static function edit_message()
+
+    public static function validate_edit($name, $email, $phone_number, $valid_old_name = false)
+    {
+        return Validator::make(
+            [
+            'name' => $name,
+            'email' => $email,
+            'phone_number' => $phone_number
+            ], [
+            'name' => $valid_old_name ? 'required' : 'required|unique:customer,name|string|min:4|max:30',
+            'email' => 'required|email|min:10|max:30',
+            'phone_number' => 'required|digits:10|min:10|max:10'
+            ],
+            CustomerValidator::edit_message()
+        );
+    }
+
+    public static function register_message()
     {
         return [
         'name.string' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
@@ -33,16 +49,18 @@ class CustomerValidator
         ];
     }
 
-    public static function validate_edit($name, $email, $phone_number, $valid_old_name)
+    public static function validate_regsiter($name, $username, $email, $phone_number, $valid_old_name = false)
     {
         return Validator::make(
             [
             'name' => $name,
+            'username' => $username,
             'email' => $email,
             'phone_number' => $phone_number
             ], [
-            'name' => $valid_old_name ? 'required' : 'required|unique:customer,name|string|min:4|max:30',
-            'email' => 'required|email|min:10|max:30',
+            'name' => 'required|unique:customer,name|string|min:4|max:30',
+            'username' => 'required|unique:customer,username|string|min:4|max:30',
+            'email' => 'required|email|unique:customer,email|min:10|max:30',
             'phone_number' => 'required|digits:10|min:10|max:10'
             ],
             CustomerValidator::edit_message()
