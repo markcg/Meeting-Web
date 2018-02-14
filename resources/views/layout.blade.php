@@ -33,9 +33,11 @@
     @endforeach
     {{Session::forget('success')}}
     @endif
-    @foreach($errors->all() as $message)
-    <div class="alert alert-danger text-center" role="alert">{{$message}}</div>
-    @endforeach
+    <?php $all = $errors->all(); ?>
+    @if(!empty($all))
+    <?php $error = $all[0]; ?>
+    <div class="alert alert-danger text-center" role="alert">{{$error}}</div>
+    @endif
     <div class="container">
       @yield('content')
     </div>

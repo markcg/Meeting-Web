@@ -17,7 +17,7 @@
               Back
             </a>
           </div>
-          <div class="col-sm-6 col-sm-offset-3">
+          <div class="col-sm-12">
             <a href="{{action('FieldController@add_promotion_list')}}">
               <button class="btn btn-info btn-block">
                 Add Promotion

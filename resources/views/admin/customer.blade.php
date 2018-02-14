@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
   <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-heading">Admin Management</div>
         <div class="panel-body">
@@ -18,15 +18,15 @@
                 <tbody id="schedule-list">
                   <tr>
                     <td>Name</td>
-                    <td><input required type="text" pattern=".{4,30}" maxlength="30" class="form-control" name="name" value="{{isset($model) ? $model->name : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="name" value="{{isset($model) ? $model->name : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Email</td>
-                    <td><input required type="text" pattern=".{10,30}" maxlength="30" class="form-control" name="email" value="{{isset($model) ? $model->email : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="email" value="{{isset($model) ? $model->email : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Phone Number</td>
-                    <td><input required type="text" pattern=".{10,10}" maxlength="10" class="form-control" name="phone_number" value="{{isset($model) ? $model->phone_number : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="phone_number" value="{{isset($model) ? $model->phone_number : ''}}" /></td>
                   </tr>
                 </tbody>
               </table>

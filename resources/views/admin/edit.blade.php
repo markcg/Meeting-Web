@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
   <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-heading">Admin Management</div>
         <div class="panel-body">

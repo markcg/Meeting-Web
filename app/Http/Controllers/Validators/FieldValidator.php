@@ -7,7 +7,7 @@ class FieldValidator
     {
         return [
         'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
-        'password.required'  => 'A message is required',
+        'password.required'  => 'Password is required',
         ];
     }
 
@@ -16,14 +16,14 @@ class FieldValidator
         return [
         'required' => 'Please fill in all required fields',
         'old_password.alpha_dash' => 'Old Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'old_password.min' => 'Please input 4-10 characters',
-        'old_password.max' => 'Please input 4-10 characters',
+        'old_password.min' => 'Please input 4-10 characters in the password',
+        'old_password.max' => 'Please input 4-10 characters in the password',
         'new_password.alpha_dash' => 'New Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'new_password.min' => 'Please input 4-10 characters',
-        'new_password.max' => 'Please input 4-10 characters',
+        'new_password.min' => 'Please input 4-10 characters in the new password',
+        'new_password.max' => 'Please input 4-10 characters in the new password',
         're_password.alpha_dash' => 'Re Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        're_password.min' => 'Please input 4-10 characters',
-        're_password.max' => 'Please input 4-10 characters',
+        're_password.min' => 'Please input 4-10 characters in the re password',
+        're_password.max' => 'Please input 4-10 characters in the re password',
         ];
     }
 
@@ -31,43 +31,45 @@ class FieldValidator
     {
         return [
         'name.alpha_spaces' => 'Field name is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'name.min' => 'Please input 4-30 characters',
-        'name.max' => 'Please input 4-30 characters',
+        'name.min' => 'Please input 4-30 characters in the name',
+        'name.max' => 'Please input 4-30 characters in the name',
         'description.alpha_spaces'  => 'Field description is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'description.min' => 'Please input 10-30 characters',
-        'description.max' => 'Please input 10-30 characters',
+        'description.min' => 'Please input 10-30 characters in the description',
+        'description.max' => 'Please input 10-30 characters in the description',
         'address.alpha_spaces'  => 'Field address is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'address.min' => 'Please input 20-100 characters',
-        'address.max' => 'Please input 20-100 characters',
+        'address.min' => 'Please input 20-100 characters in the address',
+        'address.max' => 'Please input 20-100 characters in the address',
         'email.email'  => 'Email is incorrect format. Please use correct email format',
-        'email.min' => 'Please input 10-30 characters',
-        'email.max' => 'Please input 10-30 characters',
+        'email.min' => 'Please input 10-30 characters in the email',
+        'email.max' => 'Please input 10-30 characters in the email',
         'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
-        'phone_number.max' => 'Please input 10 characters',
-        'phone_number.min' => 'Please input 10 characters',
+        'phone_number.max' => 'Please input 10 characters in the phone number',
+        'phone_number.min' => 'Please input 10 characters in the phone number',
         ];
     }
     public static function edit_detail_message()
     {
         return [
+        'name.unique' => 'Field name is already in use!',
         'name.alpha_spaces' => 'Field name is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'name.min' => 'Please input 4-30 characters',
-        'name.max' => 'Please input 4-30 characters',
+        'name.min' => 'Please input 4-30 characters in the name',
+        'name.max' => 'Please input 4-30 characters in the name',
         'description.alpha_spaces'  => 'Field description is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'description.min' => 'Please input 10-30 characters',
-        'description.max' => 'Please input 10-30 characters',
+        'description.min' => 'Please input 10-30 characters in the description',
+        'description.max' => 'Please input 10-30 characters in the description',
         'address.alpha_spaces'  => 'Field address is incorrect format. Please use only a-z, A-Z, 0-9 and space',
-        'address.min' => 'Please input 20-100 characters',
-        'address.max' => 'Please input 20-100 characters',
+        'address.min' => 'Please input 20-100 characters in the address',
+        'address.max' => 'Please input 20-100 characters in the address',
         'email.email'  => 'Email is incorrect format. Please use correct email format',
-        'email.min' => 'Please input 10-30 characters',
-        'email.max' => 'Please input 10-30 characters',
+        'email.min' => 'Please input 10-30 characters in the email',
+        'email.max' => 'Please input 10-30 characters in the email',
         'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
-        'phone_number.max' => 'Please input 10 characters',
-        'phone_number.min' => 'Please input 10 characters',
+        'phone_number.max' => 'Please input 10 characters in the phone number',
+        'phone_number.min' => 'Please input 10 characters in the phone number',
+        'username.unique' => 'Username is already in use!',
         'username.alpha_spaces' => 'Field username is incorrect format. Please use only a-z, A-Z and 0-9',
-        'username.min' => 'Please input 4-10 characters',
-        'username.max' => 'Please input 4-10 characters',
+        'username.min' => 'Please input 4-10 characters in the username',
+        'username.max' => 'Please input 4-10 characters in the username',
         ];
     }
     public static function promotion_message()
@@ -75,14 +77,14 @@ class FieldValidator
         return [
         'title.unique' => 'Promotion name is already in use!',
         'title.alpha_spaces' => 'Promotion name is incorrect format. Please use only a-z, A-Z and 0-9',
-        'title.min' => 'Please input 4-30 characters',
-        'title.max' => 'Please input 4-30 characters',
+        'title.min' => 'Please input 4-30 characters in the title',
+        'title.max' => 'Please input 4-30 characters in the title',
         'price.numeric' => 'Price is incorrect format. Please use only 0-9 and comma',
-        'price.min' => 'Please input 2-10 characters',
-        'price.max' => 'Please input 2-10 characters',
+        'price.min' => 'Please input 2-10 characters in the price',
+        'price.max' => 'Please input 2-10 characters in the price',
         'description.alpha_dash' => 'Promotion description is incorrect format. Please use only a-z, A-Z and 0-9',
-        'description.min' => 'Please input 10-250 characters',
-        'description.max' => 'Please input 10-250 characters',
+        'description.min' => 'Please input 10-250 characters in the description',
+        'description.max' => 'Please input 10-250 characters in the description',
         ];
     }
     public static function validate_login($username, $password)
@@ -150,7 +152,7 @@ class FieldValidator
             'phone_number' => 'required|digits:10|min:10|max:10',
             'username' => $valid_old_username ? 'required' : 'required|unique:field,username|alpha_spaces|min:4|max:10',
             ],
-            FieldValidator::edit_message()
+            FieldValidator::edit_detail_message()
         );
     }
     public static function validate_promotion_add($title, $price, $decription)

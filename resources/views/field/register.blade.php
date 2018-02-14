@@ -11,7 +11,7 @@
 @section('content')
 <div class="container">
   <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-heading"><h1 class="text-center">Register</h1></div>
         <div class="panel-body">
@@ -25,42 +25,46 @@
               <table class="table table-bordered">
                 <tbody id="schedule-list">
                   <tr>
-                    <td>Name</td>
-                    <td><input required type="text" pattern=".{4,30}" maxlength="30" class="form-control" name="name" value="{{isset($model) ? $model->name : ''}}" /></td>
+                    <td>Field Name</td>
+                    <td><input required type="text" novalidate class="form-control" name="name" value="{{isset($model) ? $model->name : ''}}" /></td>
                   </tr>
                   <tr>
-                    <td>Description</td>
-                    <td><input required type="text" pattern=".{10,30}" maxlength="30" class="form-control" name="description" value="{{isset($model) ? $model->description : ''}}" /></td>
+                    <td>Field Description</td>
+                    <td><input required type="text" novalidate class="form-control" name="description" value="{{isset($model) ? $model->description : ''}}" /></td>
                   </tr>
                   <tr>
-                    <td>Email</td>
-                    <td><input required type="text" pattern=".{10,30}" maxlength="30" class="form-control" name="email" value="{{isset($model) ? $model->email : ''}}" /></td>
+                    <td>Field Email</td>
+                    <td><input required type="text" novalidate class="form-control" name="email" value="{{isset($model) ? $model->email : ''}}" /></td>
                   </tr>
                   <tr>
-                    <td>Address</td>
-                    <td><input required type="text" pattern=".{20,100}" maxlength="100" class="form-control" name="address" value="{{isset($model) ? $model->address : ''}}" /></td>
+                    <td>Field Address</td>
+                    <td><input required type="text" novalidate class="form-control" name="address" value="{{isset($model) ? $model->address : ''}}" /></td>
                   </tr>
                   <tr>
-                    <td>Phone Number</td>
-                    <td><input required type="text" pattern=".{10}" maxlength="10" class="form-control" name="phone_number" value="{{isset($model) ? $model->phone_number : ''}}" /></td>
+                    <td>Field Phone Number</td>
+                    <td><input required type="text" novalidate class="form-control" name="phone_number" value="{{isset($model) ? $model->phone_number : ''}}" /></td>
                   </tr>
                   <tr>
-                    <td>Username</td>
-                    <td><input required type="text" class="form-control" name="username" value="{{isset($model) ? $model->username : ''}}" /></td>
+                    <td>Field Username</td>
+                    <td><input required type="text" novalidate class="form-control" name="username" value="{{isset($model) ? $model->username : ''}}" /></td>
                   </tr>
                   <tr>
-                    <td>Password</td>
+                    <td>Field Password</td>
                     <td><input required type="password" class="form-control" name="password" value="{{isset($model) ? $model->password : ''}}" /></td>
+                  </tr>
+                  <tr>
+                    <td>Field Re-Password</td>
+                    <td><input required type="password" novalidate class="form-control" name="repassword" value="{{isset($model) ? $model->password : ''}}" /></td>
                   </tr>
                   <tr>
                     <td colspan="2">
                       <div id="map"></div>
                     </td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <td>Latitude: <input id="latitude" required type="text" class="form-control" name="latitude" value="{{isset($model) ? $model->latitude : ''}}" /></td>
                     <td>Longitude: <input id="longitude" required type="text" class="form-control" name="longitude" value="{{isset($model) ? $model->longitude : ''}}" /></td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
             </div>

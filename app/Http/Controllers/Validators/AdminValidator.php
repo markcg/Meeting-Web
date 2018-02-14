@@ -9,7 +9,7 @@ class AdminValidator
     {
         return [
         'username.alpha_dash' => 'Username is incorrect format. Please use only a-z, A-Z and 0-9',
-        'password.required'  => 'A message is required',
+        'password.required'  => 'A password is required',
         ];
     }
 
@@ -25,14 +25,14 @@ class AdminValidator
         return [
         'required' => 'Please fill in all required fields',
         'old_password.alpha_dash' => 'Old Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'old_password.min' => 'Please input 4-10 characters',
-        'old_password.max' => 'Please input 4-10 characters',
+        'old_password.min' => 'Please input 4-10 characters in the password',
+        'old_password.max' => 'Please input 4-10 characters in the password',
         'new_password.alpha_dash' => 'New Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        'new_password.min' => 'Please input 4-10 characters',
-        'new_password.max' => 'Please input 4-10 characters',
+        'new_password.min' => 'Please input 4-10 characters in the new password',
+        'new_password.max' => 'Please input 4-10 characters in the new password',
         're_password.alpha_dash' => 'Re Password is incorrect format. Please use only a-z, A-Z and 0-9',
-        're_password.min' => 'Please input 4-10 characters',
-        're_password.max' => 'Please input 4-10 characters',
+        're_password.min' => 'Please input 4-10 characters in the re password',
+        're_password.max' => 'Please input 4-10 characters in the re password',
         ];
     }
 

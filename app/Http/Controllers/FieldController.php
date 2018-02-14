@@ -206,9 +206,15 @@ class FieldController extends Controller
         $phone_number = $request->input('phone_number');
         $username = $request->input('username');
         $password = $request->input('password');
+        $repassword = $request->input('repassword');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
 
+        if($request->input('repassword') !== $request->input('password')) {
+            return redirect('/field/register')
+            ->withErrors(['Password and Re-Password are not match.'])
+            ->withInput();;
+        }
         $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $phone_number, $username);
         if ($validator->fails()) {
             return redirect('/field/register')

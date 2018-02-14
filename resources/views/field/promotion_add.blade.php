@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
   <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-heading">Field Management</div>
         <div class="panel-body">
@@ -18,7 +18,7 @@
                 <tbody id="schedule-list">
                   <tr>
                     <td>Name</td>
-                    <td><input required type="text" pattern=".{4,30}" maxlength="30" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="title" value="{{isset($promotion) ? $promotion->title : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Price</td>
@@ -26,7 +26,7 @@
                   </tr>
                   <tr>
                     <td>Description</td>
-                    <td><input required type="text" pattern=".{10,250}" maxlength="250" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
+                    <td><input required type="text" class="form-control" name="description" value="{{isset($promotion) ? $promotion->description : ''}}" /></td>
                   </tr>
                 </tbody>
               </table>

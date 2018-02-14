@@ -37,15 +37,17 @@ class CustomerValidator
     public static function register_message()
     {
         return [
+        'name.unique' => 'Name is already in use!',
         'name.string' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
-        'name.min' => 'Please input 4-30 characters',
-        'name.max' => 'Please input 4-30 characters',
+        'name.min' => 'Please input 4-30 characters in the name',
+        'name.max' => 'Please input 4-30 characters in the name',
+        'username.unique' => 'Username is already in use!',
         'email.email'  => 'Email is incorrect format. Please use correct email format',
-        'email.min' => 'Please input 10-30 characters',
-        'email.max' => 'Please input 10-30 characters',
+        'email.min' => 'Please input 10-30 characters in the email',
+        'email.max' => 'Please input 10-30 characters in the email',
         'phone_number.digits' => 'Phone number is incorrect format. Please use only 0-9',
-        'phone_number.max' => 'Please input 10 characters',
-        'phone_number.min' => 'Please input 10 characters',
+        'phone_number.max' => 'Please input 10 characters in the phone number',
+        'phone_number.min' => 'Please input 10 characters int the phone number',
         ];
     }
 
