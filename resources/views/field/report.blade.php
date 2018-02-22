@@ -31,7 +31,7 @@
                   <td>{{$schedule->date}}</td>
                   <td>{{$schedule->schedule}}</td>
                   <?php $user = Customer::find($schedule->customer_id);  ?>
-                  <td>{{$user->attendance()}} %</td>
+                  <td>{{is_null($user) ? 0 : $user->attendance()}} %</td>
                     @if($schedule->status == 0)
                     <td>
                       <form action="{{action('FieldController@handle_report_schedule_confirm')}}">
