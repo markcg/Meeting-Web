@@ -61,10 +61,10 @@
                       <div id="map"></div>
                     </td>
                   </tr>
-                  <!-- <tr>
-                    <td>Latitude: <input id="latitude" required type="text" class="form-control" name="latitude" value="{{isset($model) ? $model->latitude : ''}}" /></td>
-                    <td>Longitude: <input id="longitude" required type="text" class="form-control" name="longitude" value="{{isset($model) ? $model->longitude : ''}}" /></td>
-                  </tr> -->
+                  <tr>
+                    <td>Latitude: <input id="latitude" required type="hidden" class="form-control" name="latitude" value="{{isset($model) ? $model->latitude : ''}}" /></td>
+                    <td>Longitude: <input id="longitude" required type="hidden" class="form-control" name="longitude" value="{{isset($model) ? $model->longitude : ''}}" /></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
