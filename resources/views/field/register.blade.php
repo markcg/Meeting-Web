@@ -26,27 +26,27 @@
                 <tbody id="schedule-list">
                   <tr>
                     <td>Field Name</td>
-                    <td><input required type="text" novalidate class="form-control" name="name" value="{{isset($model) ? $model->name : ''}}" /></td>
+                    <td><input required type="text" novalidate class="form-control" name="name" value="{{isset($model) ? $model->name : old('name')}}" /></td>
                   </tr>
                   <tr>
                     <td>Field Description</td>
-                    <td><input required type="text" novalidate class="form-control" name="description" value="{{isset($model) ? $model->description : ''}}" /></td>
+                    <td><input required type="text" novalidate class="form-control" name="description" value="{{isset($model) ? $model->description : old('description')}}" /></td>
                   </tr>
                   <tr>
                     <td>Field Email</td>
-                    <td><input required type="text" novalidate class="form-control" name="email" value="{{isset($model) ? $model->email : ''}}" /></td>
+                    <td><input required type="text" novalidate class="form-control" name="email" value="{{isset($model) ? $model->email : old('email')}}" /></td>
                   </tr>
                   <tr>
                     <td>Field Address</td>
-                    <td><input required type="text" novalidate class="form-control" name="address" value="{{isset($model) ? $model->address : ''}}" /></td>
+                    <td><input required type="text" novalidate class="form-control" name="address" value="{{isset($model) ? $model->address : old('address')}}" /></td>
                   </tr>
                   <tr>
                     <td>Field Phone Number</td>
-                    <td><input required type="text" novalidate class="form-control" name="phone_number" value="{{isset($model) ? $model->phone_number : ''}}" /></td>
+                    <td><input required type="text" novalidate class="form-control" name="phone_number" value="{{isset($model) ? $model->phone_number : old('phone_number')}}" /></td>
                   </tr>
                   <tr>
                     <td>Field Username</td>
-                    <td><input required type="text" novalidate class="form-control" name="username" value="{{isset($model) ? $model->username : ''}}" /></td>
+                    <td><input required type="text" novalidate class="form-control" name="username" value="{{isset($model) ? $model->username : old('username')}}" /></td>
                   </tr>
                   <tr>
                     <td>Field Password</td>
@@ -61,7 +61,7 @@
                       <div id="map"></div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr style="display: none;">
                     <td>Latitude: <input id="latitude" required type="hidden" class="form-control" name="latitude" value="{{isset($model) ? $model->latitude : ''}}" /></td>
                     <td>Longitude: <input id="longitude" required type="hidden" class="form-control" name="longitude" value="{{isset($model) ? $model->longitude : ''}}" /></td>
                   </tr>

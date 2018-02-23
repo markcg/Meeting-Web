@@ -8,7 +8,7 @@
         <div class="panel-heading"><h1 class="text-center">Forgot Password</h1></div>
         <div class="panel-body">
           <div class="col-sm-12 text-center">
-            <a href="{{action('FieldController@forgot_password')}}">
+            <a href="{{action('FieldController@login')}}">
               Back to Login
             </a>
           </div>

@@ -215,7 +215,7 @@ class FieldController extends Controller
             ->withErrors(['Password and Re-Password are not match.'])
             ->withInput();;
         }
-        $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $phone_number, $username);
+        $validator = FieldValidator::validate_detail_edit($name, $password, $description, $address, $email, $phone_number, $username);
         if ($validator->fails()) {
             return redirect('/field/register')
               ->withErrors($validator)
@@ -236,6 +236,13 @@ class FieldController extends Controller
         $username = $request->input('username');
         $email = $request->input('email');
 
+        $validator = FieldValidator::validate_forgot_password($username, $email);
+        if ($validator->fails()) {
+            return redirect('/field/forgot-password')
+              ->withErrors($validator)
+              ->withInput();
+        }
+
         $result = $this->account_forget($username, $email);
         if ($result) {
             $request->session()->put('success', ['Please check your email address inbox, ' . $email]);
@@ -249,7 +256,6 @@ class FieldController extends Controller
     {
         $old = Field::find($request->input('id'));
         $valid_old_name = $old->name == $request->input('name');
-        $valid_old_username = $old->username == $request->input('username');
 
         $id = $request->input('id');
         $name = $request->input('name');
@@ -257,9 +263,8 @@ class FieldController extends Controller
         $address = $request->input('address');
         $email = $request->input('email');
         $phone_number = $request->input('phone_number');
-        $username = $request->input('username');
 
-        $validator = FieldValidator::validate_detail_edit($name, $description, $address, $email, $phone_number, $username, $valid_old_name, $valid_old_username);
+        $validator = FieldValidator::validate_edit($name, $description, $address, $email, $phone_number, $valid_old_name);
         if ($validator->fails()) {
             return redirect('/field/edit')
               ->withErrors($validator)
@@ -272,8 +277,7 @@ class FieldController extends Controller
             $description,
             $email,
             $address,
-            $phone_number,
-            $username
+            $phone_number
         );
         if (!empty($model)) {
             session(['field' => $model]);
@@ -431,7 +435,6 @@ class FieldController extends Controller
         $email,
         $address,
         $phone_number,
-        $username,
         $latitude = null,
         $longitude = null
     ) {
@@ -445,7 +448,6 @@ class FieldController extends Controller
                 $account->email = $email;
                 $account->address = $address;
                 $account->phone_number = $phone_number;
-                $account->username = $username;
                 if(!is_null($latitude)
                     && !empty($latitude)
                 ) {
