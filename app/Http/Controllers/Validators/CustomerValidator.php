@@ -6,7 +6,7 @@ class CustomerValidator
     public static function edit_message()
     {
         return [
-        'name.string' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
+        'name.alpha_spaces' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
         'name.min' => 'Please input 4-30 characters',
         'name.max' => 'Please input 4-30 characters',
         'email.email'  => 'Email is incorrect format. Please use correct email format',
@@ -26,7 +26,7 @@ class CustomerValidator
             'email' => $email,
             'phone_number' => $phone_number
             ], [
-            'name' => $valid_old_name ? 'required' : 'required|unique:customer,name|string|min:4|max:30',
+            'name' => $valid_old_name ? 'required' : 'required|unique:customer,name|alpha_spaces|min:4|max:30',
             'email' => 'required|email|min:10|max:30',
             'phone_number' => 'required|digits:10|min:10|max:10'
             ],
@@ -38,7 +38,7 @@ class CustomerValidator
     {
         return [
         'name.unique' => 'Name is already in use!',
-        'name.string' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
+        'name.alpha_spaces' => 'Name is incorrect format. Please use only a-z, A-Z and one space',
         'name.min' => 'Please input 4-30 characters in the name',
         'name.max' => 'Please input 4-30 characters in the name',
         'username.unique' => 'Username is already in use!',
@@ -60,12 +60,12 @@ class CustomerValidator
             'email' => $email,
             'phone_number' => $phone_number
             ], [
-            'name' => 'required|unique:customer,name|string|min:4|max:30',
+            'name' => 'required|unique:customer,name|alpha_spaces|min:4|max:30',
             'username' => 'required|unique:customer,username|string|min:4|max:30',
             'email' => 'required|email|unique:customer,email|min:10|max:30',
             'phone_number' => 'required|digits:10|min:10|max:10'
             ],
-            CustomerValidator::edit_message()
+            CustomerValidator::register_message()
         );
     }
 }
