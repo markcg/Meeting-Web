@@ -176,7 +176,7 @@ class FieldValidator
               'username' => $username
             ], [
             'name' => $valid_old_name ? 'required' : 'required|unique:field,name|alpha_spaces|min:4|max:30',
-            'password' => 'required|alpha_dash|min:10|max:30',
+            'password' => 'required|alpha_dash|min:4|max:10',
             'description' => 'required|alpha_spaces|min:10|max:30',
             'address' => 'required|alpha_spaces|min:20|max:100',
             'email' => 'required|email|min:10|max:30',
