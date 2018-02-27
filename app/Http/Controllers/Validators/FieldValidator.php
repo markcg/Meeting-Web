@@ -195,7 +195,7 @@ class FieldValidator
               'description' => $decription,
             ], [
             'title' => 'required|alpha_spaces|min:4|max:30',
-            'price' => 'required|numeric|min:10|max:9999999999',
+            'price' => 'required|numeric|min:2|max:9999999999',
             'description' => 'required|alpha_spaces|min:10|max:250',
             ],
             FieldValidator::promotion_message()
@@ -209,9 +209,9 @@ class FieldValidator
               'price' => $price,
               'description' => $decription,
             ], [
-            'title' => 'required|alpha_dash|min:4|max:30',
+            'title' => 'required|alpha_spaces|min:4|max:30',
             'price' => 'required|numeric|min:2|max:9999999999',
-            'description' => 'required|alpha_dash|min:10|max:250',
+            'description' => 'required|alpha_spaces|min:10|max:250',
             ],
             FieldValidator::promotion_message()
         );
