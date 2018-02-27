@@ -22,7 +22,7 @@
                   </tr>
                   <tr>
                     <td>Price</td>
-                    <td><input required type="number" min="10" max="9999999999" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
+                    <td><input required type="number" max="9999999999" class="form-control" name="price" value="{{isset($promotion) ? $promotion->price : ''}}" /></td>
                   </tr>
                   <tr>
                     <td>Description</td>
