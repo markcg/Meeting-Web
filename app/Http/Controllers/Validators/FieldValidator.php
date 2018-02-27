@@ -98,7 +98,7 @@ class FieldValidator
         'price.numeric' => 'Price is incorrect format. Please use only 0-9 and comma',
         'price.min' => 'Please input 2-10 characters in the price',
         'price.max' => 'Please input 2-10 characters in the price',
-        'description.alpha_dash' => 'Promotion description is incorrect format. Please use only a-z, A-Z and 0-9',
+        'description.alpha_spaces' => 'Promotion description is incorrect format. Please use only a-z, A-Z and 0-9',
         'description.min' => 'Please input 10-250 characters in the description',
         'description.max' => 'Please input 10-250 characters in the description',
         ];
