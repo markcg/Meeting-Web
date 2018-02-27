@@ -129,16 +129,24 @@ class MeetingTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testMeetingAPISearchInvalid()
+    public function testMeetingAPISearchInvalidNotExist()
     {
         $controller = new MeetingController();
-        $id = null;
+        $id = '1';
         $keyword = 'Meeting Test Search';
         $result = $controller->search($id, $keyword);
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertTrue(empty($result->toArray()));
     }
-
+    public function testMeetingAPISearchInvalidEmpty()
+    {
+        $controller = new MeetingController();
+        $id = '1';
+        $keyword = null;
+        $result = $controller->search($id, $keyword);
+        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertTrue(empty($result->toArray()));
+    }
     public function testMeetingAPISearchValid()
     {
         $meeting = $this->createMeeting();
@@ -152,5 +160,55 @@ class MeetingTest extends TestCase
         $result = $controller->search($id, $keyword);
         $this->assertInstanceOf(Collection::class, $result);
         $this->assertFalse(empty($result->toArray()));
+    }
+    public function testMeetingAPIAcceptTeamValid()
+    {
+        $model = new MeetingTeam();
+        $model->team_id = 1;
+        $model->meeting_id = 1;
+        $model->save();
+
+        $controller = new TeamController();
+        $result = $controller->accept_team($model->id);
+        $this->assertTrue($result);
+        $this->assertDatabaseHas(
+            'meeting_team', [
+            'team_id' => 1,
+            'meeting_id' => 1,
+            'confirm' => 1
+            ]
+        );
+        // Schedule::where('date', '=', '2000-01-03')->delete();
+    }
+    public function testMeetingAPIAcceptTeamInvalid()
+    {
+        $controller = new TeamController();
+        $result = $controller->accept_team(null);
+        $this->assertFalse($result);
+    }
+    public function testMeetingAPIConfirmTeamValid()
+    {
+        $model = new MeetingTeam();
+        $model->team_id = 1;
+        $model->meeting_id = 1;
+        $model->save();
+
+        $controller = new TeamController();
+        $result = $controller->confirm_team($model->id);
+        $this->assertTrue($result);
+        $this->assertDatabaseHas(
+            'meeting_team', [
+            'team_id' => 1,
+            'meeting_id' => 1,
+            'confirm' => 2
+            ]
+        );
+        // Schedule::where('date', '=', '2000-01-03')->delete();
+    }
+    public function testMeetingAPIConfirmTeamInvalid()
+    {
+        $controller = new TeamController();
+        $result = $controller->confirm_team(null);
+        $this->assertFalse($result);
     }
 }

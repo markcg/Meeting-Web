@@ -55,6 +55,36 @@ class TeamTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testTeamAPICreateInvalidCustomerId()
+    {
+        $controller = new TeamController();
+        $customer_id = null;
+        $name = 'Team Test';
+        $description = '2017-01-01';
+        $result = $controller->create($customer_id, $name, $description);
+        $this->assertFalse($result);
+    }
+
+    public function testTeamAPICreateInvalidName()
+    {
+        $controller = new TeamController();
+        $customer_id = '1';
+        $name = null;
+        $description = '2017-01-01';
+        $result = $controller->create($customer_id, $name, $description);
+        $this->assertFalse($result);
+    }
+
+    public function testTeamAPICreateInvalidDescription()
+    {
+        $controller = new TeamController();
+        $customer_id = '1';
+        $name = 'Team Test';
+        $description = null;
+        $result = $controller->create($customer_id, $name, $description);
+        $this->assertFalse($result);
+    }
+
     public function testTeamAPIDeleteInvalid()
     {
         $controller = new TeamController();
@@ -88,7 +118,31 @@ class TeamTest extends TestCase
         $result = $controller->add_member($team_id, $customer_id);
         $this->assertTrue($result);
     }
+    public function testTeamAPIMemberConfirmValid()
+    {
+        $model = new TeamMember();
+        $model->team_id = 1;
+        $model->customer_id = 1;
+        $model->save();
 
+        $controller = new TeamController();
+        $result = $controller->confirm_member($model->id);
+        $this->assertTrue($result);
+        $this->assertDatabaseHas(
+            'team_member', [
+            'team_id' => 1,
+            'customer_id' => 1,
+            'confirm' => 1
+            ]
+        );
+        // Schedule::where('date', '=', '2000-01-03')->delete();
+    }
+    public function testTeamAPIMemberConfirmInvalid()
+    {
+        $controller = new TeamController();
+        $result = $controller->confirm_member(null);
+        $this->assertFalse($result);
+    }
     public function testTeamAPIDeleteTeamInvalid()
     {
         $controller = new TeamController();

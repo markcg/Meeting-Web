@@ -35,11 +35,33 @@ class AdminAPITest extends TestCase
         $this->assertInstanceOf(Admin::class, $result);
     }
 
-    public function testAdminAPILoginInvalid()
+    public function testAdminAPILoginInvalidNotExist()
+    {
+        $controller = new AdminController();
+        $username = 'badmin';
+        $password = '123456';
+
+        $result = $controller->account_login($username, $password);
+        $this->assertFalse($result);
+    }
+
+    public function testAdminAPILoginInvalidUsername()
+    {
+        $controller = new AdminController();
+        $username = null;
+        $password = '123456';
+
+        $result = $controller->account_login($username, $password);
+        $this->assertFalse($result);
+    }
+
+    public function testAdminAPILoginInvalidPassword()
     {
         $controller = new AdminController();
         $username = 'admin';
-        $result = $controller->account_login($username, null);
+        $password = null;
+
+        $result = $controller->account_login($username, $password);
         $this->assertFalse($result);
     }
 
@@ -68,7 +90,7 @@ class AdminAPITest extends TestCase
         $this->assertInstanceOf(Admin::class, $result);
     }
 
-    public function testAdminAPIChangePasswordInvalid()
+    public function testAdminAPIChangePasswordInvalidId()
     {
         $controller = new AdminController();
         $id = null;
@@ -77,7 +99,24 @@ class AdminAPITest extends TestCase
         $result = $controller->account_change_password($id, $old_password, $new_password);
         $this->assertFalse($result);
     }
-
+    public function testAdminAPIChangePasswordInvalidOld()
+    {
+        $controller = new AdminController();
+        $id = '1';
+        $old_password = null;
+        $new_password = '1234567';
+        $result = $controller->account_change_password($id, $old_password, $new_password);
+        $this->assertFalse($result);
+    }
+    public function testAdminAPIChangePasswordInvalidNew()
+    {
+        $controller = new AdminController();
+        $id = '1';
+        $old_password = '123456';
+        $new_password = null;
+        $result = $controller->account_change_password($id, $old_password, $new_password);
+        $this->assertFalse($result);
+    }
     public function testAdminAPIChangePasswordValid()
     {
         $controller = new AdminController();

@@ -121,5 +121,17 @@ class CustomerTableSeeder extends Seeder
             'longitude' => '98.979263',
             ]
         );
+        /* New Seeder */
+        DB::table('customer')->insert(
+            [
+            'name' => 'Kanchanit Puapun',
+            'email' => 'jomsucre@gmai.com',
+            'phone_number' => '0882634644',
+            'username' => 'kanchanit1',
+            'password' => 'jom123',
+            'latitude' => '18.796367351551',
+            'longitude' => '98.95334243774414',
+            ]
+        );
     }
 }

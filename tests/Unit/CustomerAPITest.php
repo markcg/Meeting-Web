@@ -31,41 +31,41 @@ class CustomerAPITest extends TestCase
     public function testCustomerAPILoginInvalid()
     {
         $model = new Customer();
-        $model->username = 'customer_login_valid';
-        $model->password = '123456';
-        $model->name = '';
-        $model->email = '';
-        $model->phone_number = '';
-        $model->latitude = '';
-        $model->longitude = '';
+        $model->username = 'Kanchanit1_invalid';
+        $model->password = 'jom123';
+        $model->name = 'Kanchanit Puapun';
+        $model->email = 'jomsucre@gmail.com';
+        $model->phone_number = '0882634644';
+        $model->latitude = '18.796367351551';
+        $model->longitude = '98.95334243774414';
         $model->save();
 
         $controller = new CustomerController();
-        $username = 'customer_login_invalid';
+        $username = 'worakamon';
         $password = '123456';
         $result = $controller->account_login($username, $password);
         $this->assertFalse($result);
-        Customer::where('username', '=', 'customer_login_valid')->delete();
+        Customer::where('username', '=', 'Kanchanit1_invalid')->delete();
     }
 
     public function testCustomerAPILoginValid()
     {
         $model = new Customer();
-        $model->username = 'customer_login_valid';
-        $model->password = '123456';
-        $model->name = '';
-        $model->email = '';
-        $model->phone_number = '';
-        $model->latitude = '';
-        $model->longitude = '';
+        $model->username = 'Kanchanit1';
+        $model->password = 'jom123';
+        $model->name = 'Kanchanit Puapun';
+        $model->email = 'jomsucre@gmail.com';
+        $model->phone_number = '0882634644';
+        $model->latitude = '18.796367351551';
+        $model->longitude = '98.95334243774414';
         $model->save();
 
         $controller = new CustomerController();
-        $username = 'customer_login_valid';
-        $password = '123456';
+        $username = 'Kanchanit1';
+        $password = 'jom123';
         $result = $controller->account_login($username, $password);
         $this->assertInstanceOf(Customer::class, $result);
-        Customer::where('username', '=', 'customer_login_valid')->delete();
+        Customer::where('username', '=', 'Kanchanit1')->delete();
     }
 
     /* --Customer Register */
@@ -106,7 +106,7 @@ class CustomerAPITest extends TestCase
     }
 
     /* --Customer Edit*/
-    public function testCustomerAPIEditInvalid()
+    public function testCustomerAPIEditInvalidId()
     {
         $controller = new CustomerController();
         $id = null;
@@ -120,67 +120,99 @@ class CustomerAPITest extends TestCase
         $result = $controller->account_edit($id, $name, $email, $phone_number, $username, $password, $latitude, $longitude);
         $this->assertFalse($result);
     }
-
-    public function testCustomerAPIEditValid()
+    public function testCustomerAPIEditInvalidData()
     {
-        $model = new Customer();
-        $model->username = 'customer_edit_valid';
-        $model->password = '123456';
-        $model->name = '';
-        $model->email = '';
-        $model->phone_number = '';
-        $model->latitude = '';
-        $model->longitude = '';
-        $model->save();
-
         $controller = new CustomerController();
-        $id = $model->id;
-        $name = 'customer_edit_valid';
-        $email = 'customer@register.com';
+        $id = '1';
+        $name = null;
+        $email = null;
         $phone_number = '0123456789';
         $username = 'customer';
         $password = '123456';
         $latitude = '0.1';
         $longitude = '0.1';
         $result = $controller->account_edit($id, $name, $email, $phone_number, $username, $password, $latitude, $longitude);
+        $this->assertFalse($result);
+    }
+    public function testCustomerAPIEditValid()
+    {
+        $model = new Customer();
+        $model->username = 'Kanchanit1';
+        $model->password = 'jom123';
+        $model->name = 'Kanchanit Puapun';
+        $model->email = 'jomsucre@gmail.com';
+        $model->phone_number = '0882634644';
+        $model->latitude = '18.796367351551';
+        $model->longitude = '98.95334243774414';
+        $model->save();
+
+        $controller = new CustomerController();
+        $id = $model->id;
+        $username = 'Kanchanit1';
+        $password = 'jom123';
+        $name = 'Kanchanit Puapun';
+        $email = 'jomsucre@gmail.com';
+        $phone_number = '0882634644';
+        $latitude = '18.796367351551';
+        $longitude = '98.95334243774414';
+        $result = $controller->account_edit($id, $name, $email, $phone_number, $username, $password, $latitude, $longitude);
         $this->assertInstanceOf(Customer::class, $result);
         Customer::where('name', '=', 'customer_edit_valid')->delete();
     }
 
     /* --Customer Change Password*/
-    public function testCustomerAPIChangePasswordInvalid()
+    public function testCustomerAPIChangePasswordInvalidId()
+    {
+        $controller = new CustomerController();
+        $id = null;
+        $old_password = '123456';
+        $new_password = '1234567';
+        $result = $controller->account_change_password($id, $old_password, $new_password);
+        $this->assertFalse($result);
+    }
+    public function testCustomerAPIChangePasswordInvalidOld()
     {
         $controller = new CustomerController();
 
-        $old_password = '123456';
+        $id = '1';
+        $old_password = null;
         $new_password = '1234567';
-        $result = $controller->account_change_password(null, $old_password, $new_password);
+        $result = $controller->account_change_password($id, $old_password, $new_password);
         $this->assertFalse($result);
     }
+    public function testCustomerAPIChangePasswordInvalidNew()
+    {
+        $controller = new CustomerController();
 
+        $id = '1';
+        $old_password = 'nong123';
+        $new_password = '123456';
+        $result = $controller->account_change_password($id, $old_password, $new_password);
+        $this->assertFalse($result);
+    }
     public function testCustomerAPIChangePasswordValid()
     {
         $model = new Customer();
-        $model->username = 'customer_api_change_valid';
-        $model->password = '123456';
-        $model->name = '';
-        $model->email = '';
-        $model->phone_number = '';
-        $model->latitude = '';
-        $model->longitude = '';
+        $model->username = 'Kanchanit1_change_password';
+        $model->password = 'jom123';
+        $model->name = 'Kanchanit Puapun';
+        $model->email = 'jomsucre@gmail.com';
+        $model->phone_number = '0882634644';
+        $model->latitude = '18.796367351551';
+        $model->longitude = '98.95334243774414';
         $model->save();
 
         $controller = new CustomerController();
         $id = $model->id;
-        $old_password = '123456';
-        $new_password = '1234567';
+        $old_password = 'jom123';
+        $new_password = 'jom456';
         $result = $controller->account_change_password($id, $old_password, $new_password);
         $this->assertTrue($result);
-        Customer::where('name', '=', 'customer_api_change_valid')->delete();
+        Customer::where('name', '=', 'Kanchanit1_change_password')->delete();
     }
 
     /* --Customer Forgot Password*/
-    public function testCustomerAPIForgotInvalid()
+    public function testCustomerAPIForgotInvalidNotExist()
     {
         // $model = new Customer();
         // $model->username = 'customer_api_forgot_invalid';
@@ -188,46 +220,55 @@ class CustomerAPITest extends TestCase
         // $model->save();
 
         $controller = new CustomerController();
-        $username = 'customer_api_forgot_invalid';
-        $email = 'a@a.com';
+        $username = 'worakamon';
+        $email = 'jomsucre@gmail.com';
         $result = $controller->account_forget($username, $email);
         $this->assertFalse($result);
     }
-
-    public function testCustomerAPIForgotWrongEmailInvalid()
+    public function testCustomerAPIForgotInvalidEmail()
     {
-        $model = new Customer();
-        $model->username = 'customer_api_email_invalid';
-        $model->email = 'a@a.com';
-        $model->password = '';
-        $model->name = '';
-        $model->phone_number = '';
-        $model->latitude = '';
-        $model->longitude = '';
-        $model->save();
+        // $model = new Customer();
+        // $model->username = 'customer_api_forgot_invalid';
+        // $model->email = 'a@a.com';
+        // $model->save();
 
         $controller = new CustomerController();
-        $username = 'customer_api_forgot_invalid';
+        $username = 'Kanchanit1';
         $email = 'a@b.com';
         $result = $controller->account_forget($username, $email);
         $this->assertFalse($result);
-        Customer::where('name', '=', 'customer_api_email_invalid')->delete();
+    }
+    public function testCustomerAPIForgotWrongEmailInvalid()
+    {
+        $model = new Customer();
+        $model->username = 'Kanchanit1_forgot';
+        $model->password = 'jom123';
+        $model->name = 'Kanchanit Puapun';
+        $model->email = 'jomsucre@gmail.com';
+        $model->phone_number = '0882634644';
+        $model->latitude = '18.796367351551';
+        $model->longitude = '98.95334243774414';
+        $model->save();
+
+        $controller = new CustomerController();
+        $username = 'Kanchanit1_forgot';
+        $email = 'jomsucre@gmai.com';
+        $result = $controller->account_forget($username, $email);
+        $this->assertFalse($result);
+        Customer::where('name', '=', 'Kanchanit1_forgot')->delete();
     }
 
     public function testCustomerAPIForgotValid()
     {
-        // $model = new Customer();
-        // $model->username = 'customerApiForgetValid';
-        // $model->email = 'forget@a.com';
-        // $model->password = '';
-        // $model->name = '';
-        // $model->description = '';
-        // $model->email = '';
-        // $model->address = '';
-        // $model->phone_number = '';
-        // $model->latitude = '';
-        // $model->longitude = '';
-        // $model->save();
+        $model = new Customer();
+        $model->username = 'Kanchanit1_forgot';
+        $model->password = 'jom123';
+        $model->name = 'Kanchanit Puapun';
+        $model->email = 'jomsucre@gmail.com';
+        $model->phone_number = '0882634644';
+        $model->latitude = '18.796367351551';
+        $model->longitude = '98.95334243774414';
+        $model->save();
 
         $controller = new CustomerController();
         $username = 'user_a';
@@ -235,5 +276,88 @@ class CustomerAPITest extends TestCase
         $result = $controller->account_forget($username, $email, true);
         $this->assertTrue($result);
         // Customer::where('name', '=', 'customerApiForgetValid')->delete();
+    }
+    /* Friend */
+    public function testCustomerAPIAddFriendInvalid()
+    {
+        $controller = new CustomerController();
+        $friend_id = null;
+        $customer_id = null;
+        $result = $controller->friend_add($friend_id, $customer_id);
+        $this->assertFalse($result);
+    }
+
+    public function testCustomerAPIAddFriendValid()
+    {
+        $controller = new TeamController();
+        $friend_id = 1;
+        $customer_id = 1;
+        $result = $controller->friend_add($friend_id, $customer_id);
+        $this->assertTrue($result);
+    }
+
+    public function testCustomerAPIFriendAcceptInvalid()
+    {
+        $controller = new CustomerController();
+        $id = null;
+        $result = $controller->friend_accept($id);
+        $this->assertFalse($result);
+    }
+
+    public function testCustomerAPIFriendAcceptValid()
+    {
+        $controller = new TeamController();
+        $model = new Friend();
+        $model->friend_id = 1;
+        $model->customer_id = 1;
+        $model->save();
+        $result = $controller->friend_accept($model->id);
+        $this->assertTrue($result);
+    }
+
+    public function testCustomerAPIFriendRejectInvalid()
+    {
+        $controller = new CustomerController();
+        $id = null;
+        $result = $controller->friend_reject($id);
+        $this->assertFalse($result);
+    }
+
+    public function testCustomerAPIFriendRejectValid()
+    {
+        $controller = new TeamController();
+        $model = new Friend();
+        $model->friend_id = 1;
+        $model->customer_id = 1;
+        $model->save();
+        $result = $controller->friend_reject($model->id);
+        $this->assertTrue($result);
+    }
+
+    public function testCustomerAPIFriendDeleteInvalid()
+    {
+        $controller = new CustomerController();
+        $id = null;
+        $result = $controller->friend_delete($id);
+        $this->assertFalse($result);
+    }
+
+    public function testCustomerAPIFriendDeleteValid()
+    {
+        $controller = new TeamController();
+        $model = new Friend();
+        $model->friend_id = 1;
+        $model->customer_id = 1;
+        $model->save();
+        $result = $controller->friend_delete($model->id);
+        $this->assertTrue($result);
+    }
+    /* List */
+    public function testCustomerAPIGetRequestInvalid()
+    {
+        $controller = new CustomerController();
+        $id = null;
+        $result = $controller->friends_request($id);
+        $this->assertFalse($result);
     }
 }

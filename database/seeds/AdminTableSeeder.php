@@ -19,7 +19,7 @@ class AdminTableSeeder extends Seeder
         );
         DB::table('admin')->insert(
             [
-            'username' => 'admin_2',
+            'username' => 'admin2',
             'password' => '123456',
             ]
         );
