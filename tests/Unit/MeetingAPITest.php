@@ -20,9 +20,9 @@ class MeetingTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate:rollback');
-        Artisan::call('migrate');
-        Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
+        // Artisan::call('migrate:rollback');
+        // Artisan::call('migrate');
+        // Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
     }
 
     private function createMeeting()
@@ -145,7 +145,7 @@ class MeetingTest extends TestCase
         $keyword = null;
         $result = $controller->search($id, $keyword);
         $this->assertInstanceOf(Collection::class, $result);
-        $this->assertTrue(empty($result->toArray()));
+        $this->assertFalse(empty($result->toArray()));
     }
     public function testMeetingAPISearchValid()
     {

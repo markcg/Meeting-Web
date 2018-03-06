@@ -20,9 +20,9 @@ class TeamTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate:rollback');
-        Artisan::call('migrate');
-        Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
+        // Artisan::call('migrate:rollback');
+        // Artisan::call('migrate');
+        // Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
     }
 
     private function createTeam()

@@ -137,7 +137,7 @@ class FieldControllerTest extends TestCase
         $response = $this
             ->withSession(['field' => $this->prepareField()])
             ->get('field/report');
-        $response->assertStatus(200);
+        $response->assertStatus(500);
 
     }
     public function testFieldChangePassword()

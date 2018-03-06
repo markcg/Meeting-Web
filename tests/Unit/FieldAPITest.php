@@ -21,9 +21,9 @@ class FieldAPITest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate:rollback');
-        Artisan::call('migrate');
-        Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
+        // Artisan::call('migrate:rollback');
+        // Artisan::call('migrate');
+        // Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
     }
 
     /* API Method*/
@@ -264,10 +264,9 @@ class FieldAPITest extends TestCase
         $model = new Field();
         $model->username = 'fieldApiForgetValid';
         $model->email = 'forget@a.com';
-        $model->password = '';
-        $model->name = '';
-        $model->description = '';
-        $model->email = '';
+        $model->password = 'fieldApiForgetValid';
+        $model->name = 'fieldApiForgetValid';
+        $model->description = 'fieldApiForgetValid';
         $model->address = '';
         $model->phone_number = '';
         $model->latitude = '';
@@ -278,7 +277,7 @@ class FieldAPITest extends TestCase
         $username = 'fieldApiForgetValid';
         $email = 'forget@a.com';
         $result = $controller->account_forget($username, $email, true);
-        $this->assertFalse($result);
+        $this->assertTrue($result);
         Field::where('name', '=', 'fieldApiForgetValid')->delete();
     }
 
