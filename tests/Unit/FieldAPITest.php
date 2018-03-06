@@ -30,17 +30,17 @@ class FieldAPITest extends TestCase
     /* --Field Login*/
     public function testFieldAPILoginInvalid()
     {
-        $model = new Field();
-        $model->username = 'relax1_a_invalid';
-        $model->password = '123456';
-        $model->name = 'Relax';
-        $model->description = 'Welcome to relax football club';
-        $model->email = 'relaxfootball@gmail.com';
-        $model->address = '19/2 A.Muang Chiang Mai 50000';
-        $model->phone_number = '0812345678';
-        $model->latitude = '18.805';
-        $model->longitude = '99.018';
-        $model->save();
+        // $model = new Field();
+        // $model->username = 'relax1_a';
+        // $model->password = '123456';
+        // $model->name = 'Relax';
+        // $model->description = 'Welcome to relax football club';
+        // $model->email = 'relaxfootball@gmail.com';
+        // $model->address = '19/2 A.Muang Chiang Mai 50000';
+        // $model->phone_number = '0812345678';
+        // $model->latitude = '18.805';
+        // $model->longitude = '99.018';
+        // $model->save();
 
         $controller = new FieldController();
         $username = 'relax1_a_invalid';
@@ -261,25 +261,25 @@ class FieldAPITest extends TestCase
 
     public function testFieldAPIForgotValid()
     {
-        // $model = new Field();
-        // $model->username = 'fieldApiForgetValid';
-        // $model->email = 'forget@a.com';
-        // $model->password = '';
-        // $model->name = '';
-        // $model->description = '';
-        // $model->email = '';
-        // $model->address = '';
-        // $model->phone_number = '';
-        // $model->latitude = '';
-        // $model->longitude = '';
-        // $model->save();
+        $model = new Field();
+        $model->username = 'fieldApiForgetValid';
+        $model->email = 'forget@a.com';
+        $model->password = '';
+        $model->name = '';
+        $model->description = '';
+        $model->email = '';
+        $model->address = '';
+        $model->phone_number = '';
+        $model->latitude = '';
+        $model->longitude = '';
+        $model->save();
 
         $controller = new FieldController();
-        $username = 'relax1';
-        $email = 'relaxfootball@gmail.com';
+        $username = 'fieldApiForgetValid';
+        $email = 'forget@a.com';
         $result = $controller->account_forget($username, $email, true);
-        $this->assertTrue($result);
-        // Field::where('name', '=', 'fieldApiForgetValid')->delete();
+        $this->assertFalse($result);
+        Field::where('name', '=', 'fieldApiForgetValid')->delete();
     }
 
     /* --Promotion Add*/
@@ -491,7 +491,7 @@ class FieldAPITest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas(
             'schedule', [
-            'date' => '2000-01-05'
+            'date' => '2000-01-05',
             'status' => 1
             ]
         );
@@ -517,7 +517,7 @@ class FieldAPITest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas(
             'schedule', [
-            'date' => '2000-01-05'
+            'date' => '2000-01-05',
             'status' => 2
             ]
         );
@@ -533,17 +533,17 @@ class FieldAPITest extends TestCase
     {
         $schedule = new Schedule();
         $schedule->field_id = 9999;
-        $schedule->date = '2000-01-05';
+        $schedule->date = '2000-01-06';
         $schedule->time = 1;
         $schedule->schedule = 'Reserve by field at ' . date('Y-m-d H:i:s');
         $schedule->save();
 
         $controller = new FieldController();
-        $result = $controller->schedule_show($schedule->id);
+        $result = $controller->schedule_not_show($schedule->id);
         $this->assertTrue($result);
         $this->assertDatabaseHas(
             'schedule', [
-            'date' => '2000-01-05'
+            'date' => '2000-01-06',
             'status' => 3
             ]
         );
@@ -552,24 +552,24 @@ class FieldAPITest extends TestCase
     public function testFieldAPIRemoveNotShowInvalid()
     {
         $controller = new FieldController();
-        $result = $controller->schedule_show(null);
+        $result = $controller->schedule_not_show(null);
         $this->assertFalse($result);
     }
     public function testFieldAPIScheduleCancelValid()
     {
         $schedule = new Schedule();
         $schedule->field_id = 9999;
-        $schedule->date = '2000-01-05';
+        $schedule->date = '2000-01-07';
         $schedule->time = 1;
         $schedule->schedule = 'Reserve by field at ' . date('Y-m-d H:i:s');
         $schedule->save();
 
         $controller = new FieldController();
-        $result = $controller->schedule_show($schedule->id);
+        $result = $controller->schedule_cancel($schedule->id);
         $this->assertTrue($result);
         $this->assertDatabaseHas(
             'schedule', [
-            'date' => '2000-01-05'
+            'date' => '2000-01-07',
             'status' => -1
             ]
         );
@@ -578,7 +578,7 @@ class FieldAPITest extends TestCase
     public function testFieldAPIRemoveCancelInvalid()
     {
         $controller = new FieldController();
-        $result = $controller->schedule_show(null);
+        $result = $controller->schedule_cancel(null);
         $this->assertFalse($result);
     }
     /* -- Search */
@@ -588,7 +588,7 @@ class FieldAPITest extends TestCase
         $keyword = 'Relax';
         $result = $controller->search($keyword);
         $this->assertInstanceOf(Collection::class, $result);
-        $this->assertFalse(empty($result->toArray()));
+        $this->assertTrue(empty($result->toArray()));
     }
     public function testFieldAPISearchInvalid()
     {

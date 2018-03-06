@@ -168,7 +168,7 @@ class MeetingTest extends TestCase
         $model->meeting_id = 1;
         $model->save();
 
-        $controller = new TeamController();
+        $controller = new MeetingController();
         $result = $controller->accept_team($model->id);
         $this->assertTrue($result);
         $this->assertDatabaseHas(
@@ -182,7 +182,7 @@ class MeetingTest extends TestCase
     }
     public function testMeetingAPIAcceptTeamInvalid()
     {
-        $controller = new TeamController();
+        $controller = new MeetingController();
         $result = $controller->accept_team(null);
         $this->assertFalse($result);
     }
@@ -193,7 +193,7 @@ class MeetingTest extends TestCase
         $model->meeting_id = 1;
         $model->save();
 
-        $controller = new TeamController();
+        $controller = new MeetingController();
         $result = $controller->confirm_team($model->id);
         $this->assertTrue($result);
         $this->assertDatabaseHas(
@@ -207,7 +207,7 @@ class MeetingTest extends TestCase
     }
     public function testMeetingAPIConfirmTeamInvalid()
     {
-        $controller = new TeamController();
+        $controller = new MeetingController();
         $result = $controller->confirm_team(null);
         $this->assertFalse($result);
     }

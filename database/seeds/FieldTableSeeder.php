@@ -81,5 +81,6 @@ class FieldTableSeeder extends Seeder
             'confirm' => '1',
             ]
         );
+        
     }
 }

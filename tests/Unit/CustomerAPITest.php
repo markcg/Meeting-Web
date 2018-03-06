@@ -14,6 +14,7 @@ use App\Http\Controllers\CustomerController;
 use App\Models\Customer;
 use App\Models\Schedule;
 use App\Models\Promotion;
+use App\Models\Friend;
 
 class CustomerAPITest extends TestCase
 {
@@ -50,15 +51,15 @@ class CustomerAPITest extends TestCase
 
     public function testCustomerAPILoginValid()
     {
-        $model = new Customer();
-        $model->username = 'Kanchanit1';
-        $model->password = 'jom123';
-        $model->name = 'Kanchanit Puapun';
-        $model->email = 'jomsucre@gmail.com';
-        $model->phone_number = '0882634644';
-        $model->latitude = '18.796367351551';
-        $model->longitude = '98.95334243774414';
-        $model->save();
+        // $model = new Customer();
+        // $model->username = 'Kanchanit1';
+        // $model->password = 'jom123';
+        // $model->name = 'Kanchanit Puapun';
+        // $model->email = 'jomsucre@gmail.com';
+        // $model->phone_number = '0882634644';
+        // $model->latitude = '18.796367351551';
+        // $model->longitude = '98.95334243774414';
+        // $model->save();
 
         $controller = new CustomerController();
         $username = 'Kanchanit1';
@@ -136,15 +137,17 @@ class CustomerAPITest extends TestCase
     }
     public function testCustomerAPIEditValid()
     {
-        $model = new Customer();
-        $model->username = 'Kanchanit1';
-        $model->password = 'jom123';
-        $model->name = 'Kanchanit Puapun';
-        $model->email = 'jomsucre@gmail.com';
-        $model->phone_number = '0882634644';
-        $model->latitude = '18.796367351551';
-        $model->longitude = '98.95334243774414';
-        $model->save();
+        // $model = new Customer();
+        // $model->username = 'Kanchanit1';
+        // $model->password = 'jom123';
+        // $model->name = 'Kanchanit Puapun';
+        // $model->email = 'jomsucre@gmail.com';
+        // $model->phone_number = '0882634644';
+        // $model->latitude = '18.796367351551';
+        // $model->longitude = '98.95334243774414';
+        // $model->save();
+
+        $model = Customer::where('username', '=', 'Kanchanit1')->first();
 
         $controller = new CustomerController();
         $id = $model->id;
@@ -289,7 +292,7 @@ class CustomerAPITest extends TestCase
 
     public function testCustomerAPIAddFriendValid()
     {
-        $controller = new TeamController();
+        $controller = new CustomerController();
         $friend_id = 1;
         $customer_id = 1;
         $result = $controller->friend_add($friend_id, $customer_id);
@@ -306,7 +309,7 @@ class CustomerAPITest extends TestCase
 
     public function testCustomerAPIFriendAcceptValid()
     {
-        $controller = new TeamController();
+        $controller = new CustomerController();
         $model = new Friend();
         $model->friend_id = 1;
         $model->customer_id = 1;
@@ -325,7 +328,7 @@ class CustomerAPITest extends TestCase
 
     public function testCustomerAPIFriendRejectValid()
     {
-        $controller = new TeamController();
+        $controller = new CustomerController();
         $model = new Friend();
         $model->friend_id = 1;
         $model->customer_id = 1;
@@ -344,7 +347,7 @@ class CustomerAPITest extends TestCase
 
     public function testCustomerAPIFriendDeleteValid()
     {
-        $controller = new TeamController();
+        $controller = new CustomerController();
         $model = new Friend();
         $model->friend_id = 1;
         $model->customer_id = 1;
@@ -358,6 +361,6 @@ class CustomerAPITest extends TestCase
         $controller = new CustomerController();
         $id = null;
         $result = $controller->friends_request($id);
-        $this->assertFalse($result);
+        $this->assertEquals($result->count(), 0);
     }
 }
