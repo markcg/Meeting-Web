@@ -179,7 +179,38 @@ class MeetingController extends Controller
             return false;
         }
     }
-
+    public function calculate_sum($coor, $count)
+    {
+        try{
+            $calculate = $coor / $count;
+            return $calculate;
+        }catch(\Exception $e){
+            return 0;
+        }
+    }
+    public function total_latlng($collection)
+    {
+        $lat = 0.0;
+        $lng = 0.0;
+        try{
+            foreach ($collection as $key => $value) {
+                $lat += $value['lat'];
+                $lng += $value['lng'];
+            }
+        }catch(\Exception $e){
+            $lat = 0.0;
+            $lng = 0.0;
+        }
+        return ["lat" => $lat, "lng" => $lng];
+    }
+    public function optimize_by_meeting($lat, $lng)
+    {
+        $field = $fields = Field::orderByRaw('latitude = ' . $lat . ' DESC')
+        ->orderByRaw('longitude = ' . $lng . ' DESC')
+        ->take(10)
+        ->get();
+        return $field;
+    }
     public function optimize($id)
     {
         try {

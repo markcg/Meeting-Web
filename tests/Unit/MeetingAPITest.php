@@ -211,4 +211,72 @@ class MeetingTest extends TestCase
         $result = $controller->confirm_team(null);
         $this->assertFalse($result);
     }
+
+    /* Optimize */
+    public function testCalculateSumInvalid()
+    {
+        $controller = new MeetingController();
+        $result = $controller->calculate_sum(0, 0);
+        $this->assertEquals(0, $result);
+    }
+
+    public function testCalculateSumValidLatitude()
+    {
+        $controller = new MeetingController();
+        $result = $controller->calculate_sum(93.970715, 5);
+        $this->assertEquals(18.794143, $result);
+    }
+
+    public function testCalculateSumValidLongitude()
+    {
+        $controller = new MeetingController();
+        $result = $controller->calculate_sum(494.896315, 5);
+        $this->assertEquals(98.979263, $result);
+    }
+
+    /* Sum lat lng */
+    public function testTotalLatLngInvalid()
+    {
+        $collection = [
+          ["lat" => 18.794143],
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263]
+        ];
+        $controller = new MeetingController();
+        $result = $controller->total_latlng($collection);
+        $this->assertEquals(0, $result["lat"]);
+        $this->assertEquals(0, $result["lng"]);
+    }
+    public function testTotalLatLngValid()
+    {
+        $collection = [
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263],
+          ["lat" => 18.794143, "lng" => 98.969263]
+        ];
+        $controller = new MeetingController();
+        $result = $controller->total_latlng($collection);
+        $this->assertEquals(93.970715, $result["lat"]);
+        $this->assertEquals(494.846315, $result["lng"]);
+    }
+
+    /* Optimize By Calculation */
+    public function testOptimizeValidDefault()
+    {
+        $controller = new MeetingController();
+        $result = $controller->optimize_by_meeting(0, 0);
+        $collection = $result->toArray();
+        $this->assertContains("Football A Field", $collection[0]['name']);
+    }
+    public function testOptimizeValidNearFieldE()
+    {
+        $controller = new MeetingController();
+        $result = $controller->optimize_by_meeting(18.793143, 98.969263);
+        $collection = $result->toArray();
+        $this->assertContains("Football E Field", $collection[0]['name']);
+    }
 }

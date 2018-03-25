@@ -34,8 +34,8 @@ class FieldTableSeeder extends Seeder
             'phone_number' => '0123456789',
             'username' => 'field_b',
             'password' => '123456',
-            'latitude' => '18.796143',
-            'longitude' => '98.979263',
+            'latitude' => '18.794143',
+            'longitude' => '98.978263',
             'confirm' => '1',
             ]
         );
@@ -48,7 +48,7 @@ class FieldTableSeeder extends Seeder
             'phone_number' => '0123456789',
             'username' => 'field_c',
             'password' => '123456',
-            'latitude' => '18.796143',
+            'latitude' => '18.792143',
             'longitude' => '98.979263',
             'confirm' => '1',
             ]
@@ -62,8 +62,8 @@ class FieldTableSeeder extends Seeder
             'phone_number' => '0123456789',
             'username' => 'field_d',
             'password' => '123456',
-            'latitude' => '18.796143',
-            'longitude' => '98.979263',
+            'latitude' => '18.796443',
+            'longitude' => '98.989263',
             'confirm' => '1',
             ]
         );
@@ -76,11 +76,11 @@ class FieldTableSeeder extends Seeder
             'phone_number' => '0123456789',
             'username' => 'field_e',
             'password' => '123456',
-            'latitude' => '18.796143',
-            'longitude' => '98.979263',
+            'latitude' => '18.793143',
+            'longitude' => '98.969263',
             'confirm' => '1',
             ]
         );
-        
+
     }
 }
